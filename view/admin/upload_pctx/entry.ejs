@@ -1,0 +1,422 @@
+<link rel="stylesheet" href="/css/upload_pctx_custom.css">
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="titleSec">
+            <h2>UPLOAD PCTX</h2>
+        </div>
+
+        <div class="row">
+            <!-- Left Side: Selection Form -->
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-12 progressbar_viw">
+                                <div class="progress" role="progressbar" aria-label="Animated striped example"
+                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <div id="progressBar"
+                                        class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                        style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <% if(user.user_data.msg[0].user_type !='R' ){ %>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="ardb_id">ARDB Name</label>
+                                        <select name="ardb_id" class="form-control" id="ardb_id" required>
+                                            <option value="">Select ARDB Name</option>
+                                            <% ardb.msg.forEach(function(item2,index) { let _selected=''
+                                                if(selected.ardb_id==item2.ardb_id) _selected='selected' %>
+                                                <option value="<%=item2.ardb_id%>" <%=_selected %>>
+                                                    <%=item2.ardb_name%>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="branch_code">Branch Name</label>
+                                        <select name="branch_code" class="form-control" id="branch_code" required>
+                                            <option value="">Select Branch Name</option>
+                                            <% if(resDataBranch.length> 0){
+                                                resDataBranch.forEach(dt => {
+                                                let _selected = ''
+                                                if(selected.branch_code == dt.branch_code) _selected = 'selected' %>
+                                                <option value="<%= dt.branch_code %>" <%=_selected %>>
+                                                    <%= dt.branch_name %>
+                                                </option>
+                                                <% }) } %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <% }else{ %>
+                                    <input type="hidden" name="ardb_id" id="ardb_id"
+                                        value="<%= user.user_data.msg[0].ardb_id %>">
+                                    <input type="hidden" name="branch_code" id="branch_code"
+                                        value="<%= user.user_data.msg[0].branch_code %>">
+                                    <% } %>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="supervisor_id">Supervisor</label>
+                                                <select name="supervisor_id" class="form-control s2id"
+                                                    id="supervisor_id">
+                                                    <option value="">Select Supervisor</option>
+                                                    <% data.forEach(function(item) { %>
+                                                        <option value="<%= item.supervisor_id %>">
+                                                            <%= item.user_id %>, <%= item.supervisor_name %>
+                                                        </option>
+                                                        <% }); %>
+                                                </select>
+                                            </div>
+                                        </div>
+                        </div>
+
+                        <div class="agent_info_box agent_info" id="agent_info" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mt-2">
+                                    <label class="text-muted small">Name</label>
+                                    <p id="showAgentname"></p>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label class="text-muted small">Branch</label>
+                                    <p id="showBranch"></p>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label class="text-muted small">Supervisor Code</label>
+                                    <p id="showAgent"></p>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label class="text-muted small">Mobile No</label>
+                                    <p id="showPhone_no"></p>
+                                </div>
+                                <% if(user.user_data.msg[0].sec_amt_type=='A' ){ %>
+                                    <div class="col-md-6 mt-2">
+                                        <label class="text-muted small">Account No</label>
+                                        <p id="showAccountno"></p>
+                                    </div>
+                                    <% } %>
+                                        <div class="col-md-6 mt-2">
+                                            <label class="text-muted small">Allowable Collection Amount</label>
+                                            <p id="maxAllColAmt"></p>
+                                        </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3" style="color: var(--primary-dark);">Area Selection</h5>
+                        <div id="dynamicRowsContainer">
+                            <div class="dynamic-row" data-row-id="0">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Block Name</label>
+                                        <select class="form-control block-select" required>
+                                            <option value="">Select Block</option>
+                                            <% block_list.forEach(function(item) { %>
+                                                <option value="<%= item.BLOCK_ID %>">
+                                                    <%= item.BLOCK_NAME %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Service Area</label>
+                                        <select class="form-control service-area-select" disabled required>
+                                            <option value="">Select Service Area</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label>Village Name</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-control village-select s2id" multiple disabled required>
+                                                <option value="">Select Village</option>
+                                            </select>
+                                            <!-- <button type="button" class="add-row-btn" title="Add Row">
+                                                <i class="fa fa-plus"></i> +
+                                            </button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="save-btn-container">
+                            <button type="button" class="btn btn-primary" id="saveSelectedData">
+                                <i class="fa fa-save"></i> Save Selection
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-block py-3" id="uploadButton" disabled>
+                        POPULATE DATA
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side: Preview Table -->
+            <div class="col-md-5">
+                <div class="preview-sticky-wrapper">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="mb-4" style="color: var(--primary-dark);">Saved Preview</h5>
+                            <div class="preview-container">
+                                <table class="table table-hover preview-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Block</th>
+                                            <th>Service Area</th>
+                                            <th>Village</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="previewTableBody">
+                                        <tr>
+                                            <td colspan="4" class="text-center placeholder-text">No data saved yet</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let rowCounter = 1;
+    let savedData = [];
+
+    // Helper to get row context
+    function getRowContext(element) {
+        return $(element).closest('.dynamic-row');
+    }
+
+    // Initialize Select2
+    function initSelect2(element) {
+        $(element).select2({
+            placeholder: "Select Village",
+            allowClear: true,
+            width: '100%'
+        });
+    }
+
+    // Initial init
+    initSelect2('.village-select');
+    $('#supervisor_id').select2({ width: '100%' }); // Also init supervisor if not already
+
+    // Dynamic Row Logic
+    $(document).on('click', '.add-row-btn', function () {
+        const newRow = $('.dynamic-row').first().clone();
+        newRow.attr('data-row-id', rowCounter++);
+
+        // Remove Select2 specific elements/classes before re-init
+        newRow.find('.select2-container').remove();
+        newRow.find('select').removeClass('select2-hidden-accessible').removeAttr('data-select2-id').attr('id', '');
+
+        newRow.find('select').each(function () {
+            $(this).val('').prop('disabled', $(this).hasClass('service-area-select') || $(this).hasClass('village-select'));
+            if ($(this).hasClass('village-select')) {
+                $(this).empty().append('<option value="">Select Village</option>');
+            }
+        });
+        // Replace plus icon with minus for secondary rows
+        newRow.find('.add-row-btn').replaceWith('<button type="button" class="btn btn-sm btn-danger remove-row" style="position:static; margin-left:10px;">-</button>');
+        $('#dynamicRowsContainer').append(newRow);
+
+        // Re-init Select2 for the new row
+        initSelect2(newRow.find('.village-select'));
+    });
+
+    $(document).on('click', '.remove-row', function () {
+        $(this).closest('.dynamic-row').remove();
+    });
+
+    // ARDB & Branch Change logic
+    $('#ardb_id').on('change', function () {
+        let ardb_id = $(this).val();
+        $.ajax({
+            type: "GET",
+            url: "/admin/branch/get_brn_list_ajax",
+            data: { ardb_id: ardb_id },
+            success: function (response) {
+                $('#branch_code').empty().append(`<option value="">Select Branch Name</option>`);
+                response.msg.forEach(function (resData) {
+                    $('#branch_code').append('<option value="' + resData.branch_code + '">' + resData.branch_name + '</option>');
+                });
+            }
+        });
+    });
+
+    $("#supervisor_id").change(function () {
+        const ardb_id = $('#ardb_id').val(),
+            branch_code = $('#branch_code').val(),
+            sup_id = $(this).val();
+
+        if (!sup_id) {
+            $(".agent_info").hide();
+            return;
+        }
+
+        const req_data = window.btoa(JSON.stringify({ ardb_id, branch_code, id: sup_id }));
+
+        $.ajax({
+            type: "POST",
+            url: "/admin/supervisor/get_sup_ajax",
+            data: { enc_dt: req_data },
+            success: function (response) {
+                $(".agent_info").show();
+                $("#showAgentname").text(response.msg[0].supervisor_name);
+                $("#showBranch").text(response.msg[0].branch_name);
+                $("#showAgent").text(response.msg[0].user_id);
+                $("#showPhone_no").text(response.msg[0].phone_no);
+                $("#maxAllColAmt").text(response.msg[0].max_amt);
+                <% if (user.user_data.msg[0].sec_amt_type == 'A') { %>
+                    if (response.msg[0].account_no) {
+                        $("#showAccountno").text(response.msg[0].account_no);
+                    }
+                <% } %>
+                    $("#uploadButton").attr("disabled", false);
+            }
+        });
+    });
+
+    // Block/Service/Village Cascading for Dynamic Rows
+    $(document).on('change', '.block-select', function () {
+        const block_id = $(this).val();
+        const ardb_id = $('#ardb_id').val();
+        const $row = getRowContext(this);
+        const $serviceSelect = $row.find('.service-area-select');
+        const $villSelect = $row.find('.village-select');
+
+        $serviceSelect.empty().append('<option value="">Select Service Area</option>').prop('disabled', true);
+        $villSelect.empty().append('<option value="">Select Village</option>').prop('disabled', true);
+
+        if (block_id) {
+            $.ajax({
+                type: "GET",
+                url: "/admin/common/get_service_area_list",
+                data: { ardb_id, block_id },
+                success: function (response) {
+                    response.msg.forEach(function (resData) {
+                        $serviceSelect.append('<option value="' + resData.SERVICE_AREA_ID + '">' + resData.SERVICE_AREA_NAME + '</option>');
+                    });
+                    $serviceSelect.prop('disabled', false);
+                }
+            });
+        }
+    });
+
+    $(document).on('change', '.service-area-select', function () {
+        const service_area_id = $(this).val();
+        const ardb_id = $('#ardb_id').val();
+        const block_id = getRowContext(this).find('.block-select').val();
+        const $row = getRowContext(this);
+        const $villSelect = $row.find('.village-select');
+
+        $villSelect.empty().append('<option value="">Select Village</option>').prop('disabled', true);
+
+        if (service_area_id) {
+            $.ajax({
+                type: "GET",
+                url: "/admin/common/get_village_list",
+                data: { ardb_id, block_id, service_area_id },
+                success: function (response) {
+                    $villSelect.empty();
+                    response.msg.forEach(function (resData) {
+                        $villSelect.append('<option value="' + resData.VILL_ID + '">' + resData.VILL_NAME + '</option>');
+                    });
+                    $villSelect.prop('disabled', false);
+                    $villSelect.trigger('change'); // Notify Select2
+                }
+            });
+        }
+    });
+
+    // Save Selection Logic
+    $('#saveSelectedData').on('click', function () {
+        let valid = true;
+        let batchData = [];
+
+        $('.dynamic-row').each(function () {
+            const block = $(this).find('.block-select');
+            const service = $(this).find('.service-area-select');
+            const village = $(this).find('.village-select');
+
+            if (!block.val() || !service.val() || !village.val() || village.val().length === 0) {
+                valid = false;
+                alert("Please complete selection in all rows before saving.");
+                return false;
+            }
+
+            village.find('option:selected').each(function () {
+                batchData.push({
+                    block_id: block.val(),
+                    block_name: block.find('option:selected').text().trim(),
+                    service_area_id: service.val(),
+                    service_area_name: service.find('option:selected').text().trim(),
+                    vill_id: $(this).val(),
+                    vill_name: $(this).text().trim()
+                });
+            });
+        });
+
+        if (valid) {
+            savedData = [...savedData, ...batchData];
+            updatePreviewTable();
+            // Reset dynamic rows to 1
+            $('#dynamicRowsContainer').find('.dynamic-row:not(:first)').remove();
+            const firstRow = $('.dynamic-row').first();
+            firstRow.find('.block-select').val('');
+            firstRow.find('.service-area-select').empty().append('<option value="">Select Service Area</option>').prop('disabled', true);
+            firstRow.find('.village-select').empty().append('<option value="">Select Village</option>').prop('disabled', true).trigger('change');
+        }
+    });
+
+    function updatePreviewTable() {
+        const $tbody = $('#previewTableBody');
+        $tbody.empty();
+
+        if (savedData.length === 0) {
+            $tbody.append('<tr><td colspan="4" class="text-center placeholder-text">No data saved yet</td></tr>');
+            return;
+        }
+
+        savedData.forEach((item, index) => {
+            $tbody.append(`
+                <tr>
+                    <td>${item.block_name}</td>
+                    <td>${item.service_area_name}</td>
+                    <td>${item.vill_name}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSavedItem(${index})">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    window.removeSavedItem = function (index) {
+        savedData.splice(index, 1);
+        updatePreviewTable();
+    };
+
+    $('#uploadButton').on('click', function () {
+        if (savedData.length === 0) {
+            alert("Please save some selections before populating data.");
+            return;
+        }
+        console.log("Final Data to Process:", savedData);
+        // Add your logic to send savedData to server if needed
+        alert("Data populated successfully (check console for output)");
+    });
+</script>

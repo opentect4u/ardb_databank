@@ -1,0 +1,343 @@
+<div class="topSec">
+    <div class="container-fluid h-100 px-4">
+        <div class="d-flex align-items-center justify-content-between h-100">
+            <!-- Left: Logo & Mobile Toggle -->
+            <div class="d-flex align-items-center">
+                <div class="hambarger_res_menu mr-3 d-lg-none">
+                    <a href="#" id="hambarMobileOpenBtn" class="nav-icon-btn">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+                <div class="logo-wrapper">
+                    <img src="/images/logo_new.png" alt="ARDB" class="nav-logo" />
+                </div>
+            </div>
+
+            <!-- Center: Bank Info -->
+            <div class="bank-info-container text-center d-none d-md-block">
+                <h5 class="bank-name mb-0">
+                    <%= user.user_data.msg[0].ardb_name %>
+                        <% if(user.user_data.msg[0].user_id=='superadmin' ){ %>
+                            <span class="admin-badge">Superadmin</span>
+                            <% } %>
+                </h5>
+                <% if (user.user_data.msg[0].branch_name) { %>
+                    <div class="branch-info">
+                        <i class="fa fa-map-marker-alt"></i>
+                        <span>
+                            <%= user.user_data.msg[0].branch_name %>
+                        </span>
+                    </div>
+                    <% } %>
+            </div>
+
+            <!-- Right: Profile & Actions -->
+            <div class="nav-actions">
+                <div class="dropdown">
+                    <button class="profile-btn dropbtn" onclick="myFunction()">
+                        <div class="profile-avatar dropbtn">
+                            <i class="fa fa-user dropbtn"></i>
+                        </div>
+                        <div class="profile-info text-left d-none d-sm-block dropbtn">
+                            <span class="profile-label dropbtn">Authorized User</span>
+                            <span class="profile-name dropbtn">
+                                <%= user.user_data.msg[0].user_id %>
+                            </span>
+                        </div>
+                        <i class="fa fa-chevron-down profile-chevron dropbtn"></i>
+                    </button>
+
+                    <div id="myDropdown" class="dropdown-content animate-dropdown">
+                        <div class="dropdown-user-header">
+                            <div class="user-avatar-large">
+                                <i class="fa fa-shield"></i>
+                            </div>
+                            <div class="user-meta">
+                                <p class="user-id">
+                                    <%= user.user_data.msg[0].user_id %>
+                                </p>
+                                <p class="user-role">Management Portal</p>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-items">
+                            <% if (user.user_data.msg[0].user_type!='A' ) { %>
+                                <a href="javascript:void(0)" data-toggle="modal" data-target="#myAccount">
+                                    <i class="fa fa-vcard-o"></i> <span>My Profile</span>
+                                </a>
+                                <% } %>
+
+                                    <a href="javascript:void(0);" data-toggle="modal" data-target="#changepwd">
+                                        <i class="fa fa-key"></i> <span>Security Settings</span>
+                                    </a>
+
+                                    <div class="dropdown-divider"></div>
+
+                                    <a href="/admin/login/logout" class="logout-item">
+                                        <i class="fa fa-power-off"></i> <span>Secure Logout</span>
+                                    </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .topSec {
+        height: 72px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .nav-logo {
+        height: 42px;
+        width: auto;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+    }
+
+    .nav-icon-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        color: var(--primary-green);
+        background: rgba(39, 174, 96, 0.08);
+        text-decoration: none !important;
+        transition: all 0.2s;
+    }
+
+    .nav-icon-btn:hover {
+        background: rgba(39, 174, 96, 0.15);
+        color: var(--primary-dark);
+    }
+
+    .bank-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .admin-badge {
+        background: linear-gradient(135deg, #27ae60 0%, #1b5e20 100%);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        box-shadow: 0 2px 6px rgba(39, 174, 96, 0.2);
+    }
+
+    .branch-info {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin-top: 2px;
+        font-weight: 500;
+    }
+
+    .profile-btn {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        padding: 6px 14px 6px 8px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .profile-btn:hover {
+        background: #fcfcfc;
+        border-color: rgba(39, 174, 96, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .profile-avatar {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        color: var(--primary-green);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-label {
+        display: block;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+
+    .profile-name {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-main);
+        line-height: 1;
+    }
+
+    .profile-chevron {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        transition: transform 0.3s;
+    }
+
+    .profile-btn:hover .profile-chevron {
+        color: var(--primary-green);
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 10px);
+        background: white;
+        min-width: 260px;
+        border-radius: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+        z-index: 1001;
+        transform-origin: top right;
+    }
+
+    .dropdown-content.show {
+        display: block !important;
+    }
+
+    .animate-dropdown {
+        animation: dropIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes dropIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .dropdown-user-header {
+        background: #f8faf9;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .user-avatar-large {
+        width: 48px;
+        height: 48px;
+        background: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--primary-green);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .user-id {
+        margin: 0;
+        font-weight: 700;
+        color: var(--primary-dark);
+        font-size: 1rem;
+    }
+
+    .user-role {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .dropdown-items {
+        padding: 8px;
+    }
+
+    .dropdown-items a {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none !important;
+        color: var(--text-main);
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 10px;
+        transition: all 0.2s;
+    }
+
+    .dropdown-items a i {
+        width: 20px;
+        font-size: 1rem;
+        color: var(--text-muted);
+        transition: color 0.2s;
+    }
+
+    .dropdown-items a:hover {
+        background: rgba(39, 174, 96, 0.05);
+        color: var(--primary-green);
+    }
+
+    .dropdown-items a:hover i {
+        color: var(--primary-green);
+    }
+
+    .dropdown-divider {
+        height: 1px;
+        background: rgba(0, 0, 0, 0.04);
+        margin: 8px 16px;
+    }
+
+    .logout-item {
+        color: var(--danger) !important;
+    }
+
+    .logout-item:hover {
+        background: #fff5f5 !important;
+        color: #c0392b !important;
+    }
+
+    .logout-item i {
+        color: var(--danger) !important;
+    }
+</style>

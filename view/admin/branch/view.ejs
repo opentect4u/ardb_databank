@@ -1,0 +1,42 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="card col-12">
+            <div class="card-body">
+                <div class="titleSec">
+                    <a href="/admin/branch/edit/0" class="btn btn-primary">Add</a>
+                    <h2>Branch</h2>
+                </div>
+                <!-- <input type="file" name="myFile" class="" id="pctxFile"> -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sl. No.</th>
+                            <th>Branch Name</th>
+                            <th>Branch Code</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.msg.forEach(function(item, index) { %>
+                            <tr>
+                                <td>
+                                    <%= (index + 1) %>
+                                </td>
+                                <td>
+                                    <%= item.branch_name %>
+                                </td>
+                                <td>
+                                    <%= item.branch_code %>
+                                </td>
+                                <td>
+                                    <a href="/admin/branch/edit/<%= item.branch_id %>" class="btn btn-info">Edit</a>
+                                </td>
+                            </tr>
+                            <% }); %>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <% if(path !='/admin/login' && path !='/404' && path !='/admin/login/forgot_password' ){ %>
+        <%- include('header.ejs') %>
+    <% }else{ %>
+        <%- include('login_header.ejs') %>
+    <% } %>
+
+    <body>
+        <div class="loader_div">
+            <div class="loader"></div>
+        </div>
+        <% if(path !='/admin/login' && path !='/404' && path !='/admin/login/forgot_password' ){ %>
+            <%- include('top_bar.ejs') %>
+                <div class="container-fluid mainContainerSec pl-0 pr-0">
+                    <%- include('sidebar.ejs') %>
+                        <%- body %>
+                </div>
+                <%- include('footer.ejs') %>
+        <% }else{ %>
+            <%- body %>
+            <%- include('login_footer.ejs') %>
+            <script>
+                $(".loader_div").hide();
+            </script>
+        <% } %>
+    </body>
+
+</html>

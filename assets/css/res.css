@@ -1,0 +1,112 @@
+
+
+
+@media only screen and (max-width:1800px) {
+.boxSec_SubLeft h3 {font-size: 22px;}
+.box_Red_bot::after {width: 190px; height: 139px; right: -56px;}
+.totalCollection {font-size: 18px; min-height: inherit;}
+.collection {background: url("../images/inr.png") no-repeat 90% bottom; background-size: 45px;}
+.vehicle_in, .vehicle_out{background: url("../images/in.png") no-repeat bottom right; background-size: 55px;}
+
+.circle-border {width: 70px; height: 70px;}
+.circle {top: 5px; left: 5px; width: 60px; height: 60px;}
+.circle-border span {font-size: 18px;}
+}
+
+
+@media only screen and (max-width:1600px) {
+.box_Red_bot::after {width: 176px;}
+
+}
+
+@media only screen and (max-width:1500px) {
+.collection {width: 61%;}
+}
+
+@media only screen and (max-width:1250px) {
+.vehicle_in, .vehicle_out {background: url("../images/in.png") no-repeat bottom left; background-size: 55px; padding-bottom: 58px; padding-right: 0;}
+.collection {background: url("../images/inr.png") no-repeat bottom left; padding-right: 0; background-size: 45px;  padding-bottom: 58px;}
+.boxSec_SubLeft h3 {font-size: 18px;}
+.boxSecTable_header {font-size: 18px;}
+}
+
+@media only screen and (max-width:1050px) {
+.totalCollection {font-size: 15px;}
+.box_Red_bot::after {width: 156px;}
+
+}
+
+
+@media only screen and (max-width: 1000px) {
+.hambarger_res_menu{display: block;}
+.desktop_nav{display: none;}
+.bodyRightContentSec {max-width: 100%;}
+
+.topSecSub{display: inline-block;}
+.topSecSub .topLeftSec {max-width: 100%; display: none;}
+
+.topSecSub .topSecName {
+  padding-left: 15px; padding-top: 11px;
+/*  width: 50%;*/
+  float: left; margin: 0;
+}
+
+.topSecSub .topRightSec {
+  margin: 0 0 0 auto;
+  padding: 6px 15px 6px 0;
+/*  width: 50%;*/
+  float: right;
+}
+
+.topRightSec ul {
+  display:inline-block; float: right;}
+.topSecSub .topSecName ul li {font-size: 16px;}
+.topSecSub .topSecName ul li:first-child {font-size: 16px;}
+.topSecSub .topSecName ul li:last-child span {padding: 3px 6px; font-size: 13px;}
+
+.topRightSec ul li .loginThumb {font-size: 14px;}
+
+.bodyLeftMenu {max-width: 100%;}
+
+.boxSecTable_header {display: block;}
+
+.boxSecTable_header span {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+
+.boxSecTable_header span select{margin: 0 5px 8px 5px;}
+.boxSecTable_header span input{margin: 0 5px 8px 5px;}
+.main-panel {width: calc(100%);}
+}
+
+@media only screen and (max-width:730px) {
+
+
+.row_custom{display:inline-block !important;}
+.col_sm_4_custom{max-width: 100% !important;}
+
+.col_sm_6_custom{max-width: 100% !important;}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

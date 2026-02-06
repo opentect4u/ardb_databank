@@ -1,0 +1,147 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="card col-12">
+            <div class="card-body">
+                <div class="titleSec">
+                    <button type="button" class="btn btn-primary" id="myBtn">Add</button>
+                    <h2>Active Agent</h2>
+                </div>
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label for="ardb_id"><b>ARDB Name:</b></label>
+                        <select name="ardb_id" class="form-control" id="ardb_id" required>
+                            <option value="">Select ARDB Name</option>
+                            <% ardb.msg.forEach(function(item2,index) {
+                                let _selected = ''
+                                if(selected.ardb_id == item2.ardb_id) _selected = 'selected' %>
+                                <option value="<%=item2.ardb_id%>" <%= _selected %>>
+                                    <%=item2.ardb_name%>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-4">
+                        <label for="branch_code"><b>Branch Name:</b></label>
+                        <select name="branch_code" class="form-control" id="branch_code" required>
+                            <option value="">Select Branch Name</option>
+                            <% if(resDataBranch.length > 0){
+                                resDataBranch.forEach(dt => {
+                                    let _selected = ''
+                                    if(selected.branch_code == dt.branch_code) _selected = 'selected' %>
+                                    <option value="<%= dt.branch_code %>" <%= _selected %>><%= dt.branch_name %></option>
+                                <% })
+                            } %>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-4" style="margin-top: 29px;">
+                        <button class="btn btn-outline-success" type="button" id="submitBtn">Search</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-2">
+                        <input type="radio" name="status" id="active" value="Y" <%= selected.flag == 'Y' ? 'checked' : '' %>>
+                        <label for="active">Active</label>
+                    </div>
+
+                    <div class="form-group col-2">
+                        <input type="radio" name="status" id="inactive" value="N" <%= selected.flag == 'N' ? 'checked' : '' %>>
+                        <label for="inactive">Inactive</label>
+                    </div>
+
+
+                </div>
+                <!-- <input type="file" name="myFile" class="" id="pctxFile"> -->
+                <table class="table table_bank" id="showAgentDtls" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Sl. No.</th>
+                            <th>Agent Code</th>
+                            <th>Agent Name</th>
+                            <th>Mobile</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(data.length>0){
+                            let i = 1
+                            data.forEach(dt => {
+                            %> 
+                            <tr>
+                                <td><%= i %></td>
+                                <td><%= dt.user_id %></td>
+                                <td><%= dt.supervisor_name %></td>
+                                <td><%= dt.phone_no %></td>
+                                <td>
+                                    <span class="badge badge-<%=(dt.active_flag=='Y')?"success":"danger"%>"><%=(dt.active_flag=='Y')?"Active":"Deactive"%></span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-info" onclick="editAgent('<%= dt.ardb_id %>', '<%= dt.branch_code %>', '<%= dt.active_flag %>', '<%= dt.supervisor_id %>')">Edit</button>
+                                    <% if(dt.active_flag!='Y' && user.user_data.msg[0].user_type == 'B' ){ %>
+                                        <a href="/bank/delete_agent?agent_code=<%=dt.user_id%>&branch_code=<%=dt.branch_code%>" onclick="return chkUser('<%=dt.user_id%>');" class="btn btn-danger">Delete</a>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% i++; })}else{ %>
+                            <tr>
+                                <td colspan="6" class="text-danger text-center">No Data Found</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#ardb_id').on('change', function(){
+        let ardb_id = $(this).val()
+        $.ajax({
+            type: "GET",
+            url: "/admin/branch/get_brn_list_ajax",
+            data: { ardb_id: ardb_id },
+            success: function (response) {
+                // console.log(response.SUCCESS.branchData.msg)
+                $('#branch_code').empty();
+                $('#branch_code').append(`<option value="">Select Branch Name</option>`)
+
+                if ((response.max_user - response.active_user) > 0) {
+                    $('#ag_submit').show()
+                } else {
+                    $('#ag_submit').hide()
+                }
+
+                response.msg.forEach(function (resData) {
+                    $('#branch_code').append('<option value="' + resData.branch_code + '">' + resData.branch_name + '</option>');
+                });
+                $("#myBtn").show()
+
+            },
+            error: function (error) {
+                // console.log(error);
+                //   tbody.empty();
+                // $("#myBtn").hide()
+            },
+        });
+    })
+
+    $('#submitBtn').on('click', function(){
+        if($('#ardb_id').val() > 0 || ($('#ardb_id').val() && $('#branch_code').val() > 0)){
+            let data = {ardb_id: $('#ardb_id').val(), branch_code: $('#branch_code').val() > 0 ? $('#branch_code').val() : 0, flag: 'Y' }
+            routToNextPage('/admin/supervisor', JSON.stringify(data), true)
+        }
+    })
+
+    $('input[name="status"]').on('change', function () {
+        let data = { ardb_id: $('#ardb_id').val() > 0 ? $('#ardb_id').val() : 0, branch_code: $('#branch_code').val() > 0 ? $('#branch_code').val() : 0, flag: $(this).val() }
+        routToNextPage('/admin/supervisor', JSON.stringify(data), true)
+    })
+
+    function editAgent(ardb_id, branch_code, flag, id){
+        let data = { ardb_id, branch_code, flag, id }
+        routToNextPage('/admin/supervisor/edit', JSON.stringify(data), true)
+    }
+</script>

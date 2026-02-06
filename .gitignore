@@ -1,0 +1,8 @@
+.github
+config/conString.js
+node_modules
+.env
+package-lock.json
+*.html
+*.zip
+instantclient/*

@@ -1,0 +1,246 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="card col-12">
+            <div class="card-body">
+                <div class="titleSec">
+                    <!-- <button type="button" class="btn btn-primary">Export as CSV</button> -->
+                    <h2>Upload Account</h2>
+                </div>
+                <!-- <input type="file" name="myFile" class="" id="pctxFile"> -->
+                <div class="titleSec">
+                    <p>Branch Code: <%= user.user_data.msg[0].branch_code %></p>
+                    <p>Branch Name: <%= user.user_data.msg[0].branch_name %></p>
+                    <input type="hidden" name="ardb_id" id="ardb_id" value="<%= user.user_data.msg[0].ardb_id %>">
+                    <input type="hidden" name="branch_code" id="branch_code" value="<%= user.user_data.msg[0].branch_code %>">
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 row">
+                        <div class="form-group col-12">
+                            <label for="agentCode">Select Supervisor:</label>
+                            <select name="" class="form-control s2id" id="agentCode">
+                                <option value="">Select Supervisor</option>
+
+                                <% data.forEach(function(item) { %>
+                                    <option value="<%= item.supervisor_id %>">
+                                        <%= item.user_id %>, <%= item.supervisor_name %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-12 form-group row" id="agent_info">
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="showAgentname" class="col-sm-3 col-form-label">Name:</label>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext" id="showAgentname"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="showBranch" class="col-sm-3 col-form-label">Branch:</label>
+                                    <div class="col-sm-9">
+                                        <p id="showBranch" class="form-control-plaintext">
+
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="showAgent" class="col-sm-3 col-form-label">Supervisor Code:</label>
+                                    <div class="col-sm-9">
+                                        <p id="showAgent" class="form-control-plaintext"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+
+                                <div class="form-group row">
+                                    <label for="showPhone_no" class="col-sm-3 col-form-label">Mobile No:</label>
+                                    <div class="col-sm-9">
+                                        <p id="showPhone_no" class="form-control-plaintext"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-6">
+
+                                <div class="form-group row">
+                                    <label for="fetchDate" class="col-sm-3 col-form-label">Upload Date:</label>
+                                    <div class="col-sm-9">
+                                        <p id="fetchDate" class="form-control-plaintext"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12">
+                            <table id="accountDtTable" class="table table-striped table-bordered accountTable">
+                                <thead>
+                                    <tr>
+                                        <th>SL No.</th>
+                                        <th>Account No.</th>
+                                        <th>Name</th>
+                                        <th>Mobile No</th>
+                                        <th>Product Code</th>
+                                        <th>Balance</th>
+                                        <th>Demand</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+
+    var table = $('#accountDtTable').DataTable()
+    $(document).ready(function () {
+        var tbody = $(".accountTable tbody");
+        $("#showBtn").change(function () {
+            getData();
+            tbody.empty();
+        });
+
+        // $("#date").change(function () {
+        //   getData();
+        //   tbody.empty();
+        // });
+
+        $("#agentCode").change(function () {
+            getData();
+            agent_info()
+            tbody.empty();
+        });
+
+        function formatDate(date) {
+            var date = new Date(date);
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            if (month < 10) {
+                month = "0" + month;
+            }
+            return day + "/" + month + "/" + year;
+        }
+
+        function getData() {
+            var agentCode = $("#agentCode").val();
+            var agentDate = $("#date").val();
+
+            const ardb_id = $('#ardb_id').val(),
+                branch_code = $('#branch_code').val(),
+                sup_id = $("#agentCode").val();
+
+            const req_data = window.btoa(JSON.stringify({ ardb_id, branch_code, id: sup_id }));
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/show_upload_account/fetch_ac_dtls_ajax",
+                data: { enc_dt: req_data },
+                success: function (response) {
+                    //console.log(response.SUCCESS.msg[0].upload_dt);
+                    if (response.msg[0].upload_dt) {
+                        var datetime = formatDate(response.msg[0].upload_dt)
+                        console.log(datetime);
+                        $("#fetchDate").text(datetime);
+                    } else {
+                        $("#fetchDate").text('');
+                    }
+                    // tbody.empty();
+                    table.clear().draw();
+                    if (response.msg.length > 0) {
+                        var i = 0
+                        var res = response.msg.map(dt => {
+                            var result = [];
+                            var tkt_date = new Date(dt.tkt_date)
+                            result.push(++i)
+                            result.push(dt.account_number)
+                            result.push(dt.customer_name)
+                            result.push(dt.mobile_no)
+                            result.push(dt.product_code)
+                            result.push(formatDate(dt.opening_date))
+                            result.push(dt.current_balance)
+                            return result;
+                        })
+
+                        table.rows.add(res);
+                        table.draw();
+                    } else {
+                        tbody.append(`<tr>
+              <td class="text-center text-danger" colspan="6">No Data Found</td>
+            </tr>`)
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                },
+            });
+        }
+
+
+        $("#agent_info").hide();
+        function agent_info() {
+            const ardb_id = $('#ardb_id').val(),
+                branch_code = $('#branch_code').val(),
+                sup_id = $("#agentCode").val();
+            
+            if (!sup_id) {
+                $(".agent_info").hide();
+                return;
+            }
+
+            const req_data = window.btoa(JSON.stringify({ ardb_id, branch_code, id: sup_id }));
+
+            $("#showAgentname").text("");
+            $("#showBranch").text("");
+            $("#showAgent").text("");
+            $("#showPhone_no").text("");
+            $("#agent_info").hide();
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/supervisor/get_sup_ajax",
+                data: { enc_dt: req_data },
+                success: function (response) {
+                    console.log(response);
+                    $("#agent_info").show();
+
+                    $("#showAgentname").text(response.msg[0].supervisor_name);
+                    $("#showBranch").text(response.msg[0].branch_name);
+                    $("#showAgent").text(response.msg[0].user_id);
+                    $("#showPhone_no").text(response.msg[0].phone_no);
+                },
+                error: function (error) {
+                    console.log(error);
+                },
+            });
+        }
+    });
+</script>

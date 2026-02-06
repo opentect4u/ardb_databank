@@ -1,0 +1,41 @@
+<script>
+    $(".loader_div").hide();
+</script>
+<script src="/js/main_javascript.js"></script>
+<script src="/js/main_jquery.js"></script>
+<script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script src="/js/upload_file.js"></script>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<!-- partial -->
+ 
+<script>
+    function routToNextPage(route, params = null, encode = false) {
+        // console.log(`${route}${params ? `?data=${encode ? window.btoa(params) : params}` : ''}`);
+        window.location.href = `${route}${params ? `?enc_dt=${encode ? window.btoa(params) : params}` : ''}`
+    }
+</script>
+
+
+<% if (error.length> 0) { %>
+    <script>
+        toastr.error('<%= error %>')
+    </script>
+    <% } else if (success.length> 0) { %>
+        <script>
+            toastr.success('<%= success %>')
+        </script>
+        <% }else if (info.length> 0) { %>
+            <script>
+                toastr.info('<%= info %>')
+            </script>
+            <% }else if (warning.length> 0) { %>
+                <script>
+                    toastr.warning('<%= warning %>')
+                </script>
+                <% } %>

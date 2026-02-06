@@ -1,0 +1,185 @@
+/* Custom CSS for UPLOAD PCTX Page - Aligned with ARDB Theme */
+
+.dynamic-row {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 5px solid var(--primary-green);
+    position: relative;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dynamic-row:hover {
+    transform: scale(1.01);
+}
+
+.remove-row {
+    background: var(--danger);
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: none;
+    transition: all 0.2s;
+}
+
+.remove-row:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
+.agent_info_box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    margin-top: 15px;
+}
+
+.agent_info_box p {
+    margin-bottom: 0;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.preview-container {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.preview-table th {
+    background: var(--primary-green);
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 12px;
+}
+
+.add-row-btn {
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    transition: all 0.2s;
+}
+
+.add-row-btn:hover {
+    background: var(--primary-dark);
+    transform: rotate(90deg);
+}
+
+.save-btn-container {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.placeholder-text {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.titleSec h2 {
+    color: var(--primary-dark);
+    border-bottom: 3px solid var(--secondary-gold);
+    display: inline-block;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#saveSelectedData {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+#saveSelectedData:hover {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.btn-primary-custom {
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 2px 5px;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: var(--primary-green);
+    outline: 0;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--primary-green);
+    border: 1px solid var(--primary-dark);
+    color: white;
+    border-radius: 4px;
+    padding: 2px 8px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: white;
+    margin-right: 5px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: var(--secondary-gold);
+}
+
+/* Sticky Column for Preview */
+.preview-sticky-wrapper {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.preview-container {
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-green) #f1f1f1;
+}
+
+/* Custom Scrollbar for Chrome/Safari */
+.preview-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.preview-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.preview-container::-webkit-scrollbar-thumb {
+    background: var(--primary-green);
+    border-radius: 10px;
+}
+
+.preview-container::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}

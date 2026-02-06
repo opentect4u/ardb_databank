@@ -1,0 +1,329 @@
+<div class="main-panel">
+    <div class="content-wrapper px-4 py-4">
+        <div class="dashboard-header mb-4">
+            <h3 class="font-weight-bold" style="color: var(--primary-dark);">DDS Collection Overview</h3>
+            <p class="text-muted">Daily monitoring of collection agent activity and deposit demands.</p>
+        </div>
+
+        <div class="row">
+            <!-- Summary Stats (Optional - but good for premium feel) -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card h-100 border-left-success py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Status</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">Operational</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-check-circle fa-2x text-success" opacity="0.5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="titleSec">
+                            <h2>Collection Frequency</h2>
+                        </div>
+                        <div id="tot_no_of_coll" style="width: 100%; height: 350px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="titleSec">
+                            <h2>Collection Volume</h2>
+                        </div>
+                        <div id="tot_no_of_coll_amt" style="width: 100%; height: 350px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4 shadow-sm">
+            <div class="card-body">
+                <div class="titleSec">
+                    <h2>Agent Performance Trends</h2>
+                </div>
+                <div id="agnt_dt_wise_col" style="width: 100%; height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-left-success {
+        border-left: 0.25rem solid var(--primary-green) !important;
+    }
+
+    .text-xs {
+        font-size: .7rem;
+    }
+</style>
+
+<!-- DATA DETETATION WARNING MODAL -->
+<div class="modal fade" id="dataDelWornModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-warning">
+                <h4 class="modal-title text-white"><i class="fa fa-exclamation-triangle mr-2"
+                        aria-hidden="true"></i>Data Removal Warning</h4>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p class="text-center h4">Your angent collection data that was already sent to bank or exported will be
+                    autometically removed after the last day of the month. Please make sure to download all the data
+                    before that.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+    var br_pro_master_data = '<%- JSON.stringify(br_pro_data) %>',
+        agnt_dt_wise_col_data = '<%- JSON.stringify(agnt_dt_wise_col) %>';
+    var brProData, brProChart, brProOpt, brProAmtData, brProAmtChart, brProAmtOpt, agDtColData, agDtColChart, agDtColOpt;
+    google.charts.load("current", { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+        drawBrProChart()
+        drawBrProAmtChart()
+        drawAgDtColChart()
+    }
+
+    function drawBrProChart1() {
+        var brProRawData = [["Branch", "No of Collection", { role: 'style' }]]
+        // console.log(JSON.parse(br_pro_master_data));
+        var rawData = JSON.parse(br_pro_master_data)
+        var colors = generateRandomHexColors(rawData.length)
+        if (rawData.length > 0) {
+            let i = 0
+            rawData.forEach(dt => {
+                var newData = []
+                newData.push(dt.branch_name.toString())
+                newData.push(dt.tot_no_of_col)
+                newData.push(colors[i])
+                brProRawData.push(newData)
+                i++
+            })
+        }
+        console.log(colors, 'colors', '------------');
+        console.log(brProRawData, '++++++++');
+
+        brProData = google.visualization.arrayToDataTable(brProRawData);
+
+
+
+        brProOpt = {
+            title: 'Branch Wise Total Number of Collection',
+            chartArea: { width: '75%', height: '75%' },
+            isStacked: true,
+            tooltip: { isHtml: true },
+            vAxis: {
+                title: 'Number of Collection',
+            },
+            bar: { groupWidth: "95%" },
+            legend: {
+                position: 'right',
+                alignment: 'left',  // Center align the legend
+                maxLines: 2,          // Allow up to 2 lines if needed
+                textStyle: { fontSize: 8, color: '#555' }
+            }
+        }
+
+        brProChart = new google.visualization.ColumnChart(document.getElementById('tot_no_of_coll'));
+        brProChart.draw(brProData, brProOpt);
+    }
+
+    function drawBrProChart() {
+        var brProRawData = [["Branch", "No of Collection", { role: 'annotation' }, { role: 'annotationText' }]]
+        console.log(JSON.parse(br_pro_master_data));
+        var rawData = JSON.parse(br_pro_master_data)
+        var colors = generateRandomHexColors(rawData.length)
+        if (rawData.length > 0) {
+            let i = 0
+            rawData.forEach(dt => {
+                var newData = []
+                newData.push(dt.branch_name.toString())
+                newData.push(dt.tot_no_of_col)
+                newData.push(dt.branch_name)
+                newData.push(`Total number of collection for the branch named, ${dt.branch_name} is ${dt.tot_no_of_col}`)
+                // newData.push(+dt.tot_col)
+                brProRawData.push(newData)
+                i++
+            })
+        }
+
+        brProData = google.visualization.arrayToDataTable(brProRawData);
+
+        brProOpt = {
+            title: 'Branch Wise Number of Collection',
+            chartArea: { width: '85%', height: '70%' },
+            hAxis: { textStyle: { fontSize: 10 } },
+            vAxis: {
+                title: 'No of Collection',
+                titleTextStyle: { italics: false, fontWeight: 'bold' }
+            },
+            backgroundColor: 'transparent',
+            tooltip: { isHtml: true },
+            pointSize: 6,
+            colors: ['#1b5e20'],
+            animation: { startup: true, duration: 1000, easing: 'out' }
+        }
+
+        brProChart = new google.visualization.LineChart(document.getElementById('tot_no_of_coll'));
+        brProChart.draw(brProData, brProOpt);
+    }
+
+    function drawBrProAmtChart() {
+        var brProRawData = [["Branch", "Total Collection Amount", { role: 'annotation' }, { role: 'annotationText' }]]
+        console.log(JSON.parse(br_pro_master_data));
+        var rawData = JSON.parse(br_pro_master_data)
+        var colors = generateRandomHexColors(rawData.length)
+        if (rawData.length > 0) {
+            let i = 0
+            rawData.forEach(dt => {
+                var newData = []
+                newData.push(dt.branch_name.toString())
+                newData.push(+dt.tot_col)
+                newData.push(dt.branch_name)
+                newData.push(`Total collection amount for the branch named, ${dt.branch_name} is ${dt.tot_col}`)
+                // newData.push(+dt.tot_col)
+                brProRawData.push(newData)
+                i++
+            })
+        }
+
+        brProAmtData = google.visualization.arrayToDataTable(brProRawData);
+
+        brProAmtOpt = {
+            title: 'Branch Wise Collection Amount',
+            chartArea: { width: '85%', height: '70%' },
+            hAxis: { textStyle: { fontSize: 10 } },
+            vAxis: {
+                title: 'Total Collection Amount',
+                titleTextStyle: { italics: false, fontWeight: 'bold' }
+            },
+            backgroundColor: 'transparent',
+            tooltip: { isHtml: true },
+            pointSize: 6,
+            colors: ['#fbc02d'],
+            animation: { startup: true, duration: 1000, easing: 'out' }
+        }
+
+        brProAmtChart = new google.visualization.LineChart(document.getElementById('tot_no_of_coll_amt'));
+        brProAmtChart.draw(brProAmtData, brProAmtOpt);
+    }
+
+    function drawAgDtColChart1() {
+        // Transform into chart format: [Date, Agent1, Agent2, ...]
+        const rawData = JSON.parse(agnt_dt_wise_col_data)
+        let agents = [...new Set(rawData.map(r => r.agent_name))];
+        let dates = [...new Set(rawData.map(r => r.trn_dt))];
+
+        let chartData = [["Date", ...agents]];
+        dates.forEach(date => {
+            let row = [date];
+            agents.forEach(agent => {
+                let entry = rawData.find(r => r.trn_dt === date && r.agent_name === agent);
+                row.push(entry ? parseFloat(entry.tot_col_amt) : 0);
+            });
+            chartData.push(row);
+        });
+
+        var data = google.visualization.arrayToDataTable(chartData);
+
+        var options = {
+            title: 'Daily Collection by Agent',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('agnt_dt_wise_col'));
+        chart.draw(data, options);
+    }
+
+    function drawAgDtColChart() {
+        // Pass your dataset from Node.js to EJS
+        var rawData = JSON.parse(agnt_dt_wise_col_data)
+
+        // Get agents & dates
+        let agents = [...new Set(rawData.map(r => r.agent_name))];
+        let dates = [...new Set(rawData.map(r => r.trn_dt))];
+
+        // Chart data: [Date, Agent1, Agent2, ...]
+        let chartData = [["Date", ...agents]];
+        dates.forEach(date => {
+            let row = [date];
+            agents.forEach(agent => {
+                let entry = rawData.find(r => r.trn_dt === date && r.agent_name === agent);
+                row.push(entry ? parseFloat(entry.tot_col_amt) : 0);
+            });
+            chartData.push(row);
+        });
+
+        var data = google.visualization.arrayToDataTable(chartData);
+
+        var options = {
+            title: "Daily Collection (Stacked by Agent)",
+            isStacked: true,
+            legend: { position: "top", maxLines: 3 }, // handles many agents
+            hAxis: { title: "Date", slantedText: true, slantedTextAngle: 45 },
+            vAxis: { title: "Collection Amount" },
+            chartArea: { left: 80, right: 20, top: 80, bottom: 100 }
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById("agnt_dt_wise_col"));
+        chart.draw(data, options);
+    }
+
+
+    function generateRandomHexColors(length) {
+        const colors = [];
+        for (let i = 0; i < length; i++) {
+            // Generate a random number between 0 and 16777215 (0xFFFFFF)
+            const randomColorNumber = Math.floor(Math.random() * 16777215);
+            // Convert the number to a hexadecimal string and pad with leading zeros if necessary
+            let hexColor = randomColorNumber.toString(16);
+            while (hexColor.length < 6) {
+                hexColor = "0" + hexColor;
+            }
+            colors.push("#" + hexColor);
+        }
+        return colors;
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Get the current date
+        var currentDate = new Date();
+
+        // Get the last day of the current month
+        var lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+        // Calculate the difference in days
+        var daysRemaining = lastDayOfMonth.getDate() - currentDate.getDate();
+
+        // Show the modal if there are 10 or fewer days remaining in the month
+        if (daysRemaining <= 10) {
+            $("#wornmodal").modal("show");
+        }
+
+        $("#dataDelWornModal").modal("show");
+    });
+</script>
