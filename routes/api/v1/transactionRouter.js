@@ -490,4 +490,80 @@ transRouter.post('/calculate_intt', async (req, res) => {
     }
 })
 
+transRouter.post('/end_collection', async (req, res) => {
+    try {
+        const schema = Joi.object({
+            device_id: Joi.required(),
+            user_id: Joi.required(),
+            password: Joi.string().required(),
+            ardb_id: Joi.number().required(),
+            branch_code: Joi.string().required(),
+            supervisor_code: Joi.string().required(),
+            coll_flag: Joi.string().valid('Y', 'N').required()
+        });
+        const { error, value } = schema.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = {};
+            error.details.forEach(detail => {
+                errors[detail.context.key] = detail.message;
+            });
+            return res.json({ error: errors });
+        }
+        let wheree = `ardb_id=${value.ardb_id} AND branch_code='${value.branch_code}' AND supervisor_code='${value.supervisor_code}' AND coll_flag='Y' AND end_flag='N' AND supervisor_trans_no IS NULL`;
+        let lastsupervisor_trans = await F_Select(0, "sl_no", "md_supervisor_trans", wheree, null, 1);
+        // let transDate = dateFormat(value.transaction_date, "yyyymmdd")
+
+        if (lastsupervisor_trans.suc > 0 && lastsupervisor_trans.msg.length > 0) {
+            let currSupTransNo = `${((value.supervisor_code).toString() + (lastsupervisor_trans.msg[0].sl_no).toString()).toString()}`
+            let slnoEndTrans = lastsupervisor_trans.msg[0].sl_no;
+
+            let select = "count(*) total_collection",
+                where = `ardb_id=${value.ardb_id} AND branch_code='${value.branch_code}' AND supervisor_code='${value.supervisor_code}' AND supervisor_trans_no IS NULL`;
+            let resData = await F_Select(0, select, "td_collection", where, null, 0);
+
+            if (resData.msg.total_collection > 0) {
+                let dbvalers = `supervisor_trans_no=:0`,
+                    dbwhere = `ardb_id=:1 AND branch_code=:2 AND supervisor_code=:3 AND supervisor_trans_no IS NULL`,
+                    colVal = [currSupTransNo, value.ardb_id, value.branch_code, value.supervisor_code];
+                let update_res = await F_Insert(0, "td_collection", dbvalers, null, colVal, dbwhere, 1);
+                if (update_res.suc > 0) {
+                    let fields = `supervisor_trans_no =:0, coll_flag=:1, received_date=TO_DATE(:2, 'YYYY-MM-DD'), end_flag=:3`,
+                        wherre = `ardb_id=:4 AND branch_code=:5 AND supervisor_code=:6 AND coll_flag=:7 AND end_flag=:8 AND supervisor_trans_no IS NULL`,
+                        transVal = [currSupTransNo, 'N', dateFormat(new Date(), "yyyy-mm-dd"), 'Y', value.ardb_id, value.branch_code, value.supervisor_code, 'Y', 'N'];
+                    let res_dt = await F_Insert(0, "md_supervisor_trans", fields, null, transVal, wherre, 1);
+                    res.json({
+                        "success": res_dt,
+                        "status": true
+                    });
+                } else {
+                    res.json({
+                        "error": "Error while updating supervisor collection.",
+                        "status": false
+                    });
+                }
+            } else {
+                var nfields = `coll_flag=:0, received_date=TO_DATE(:1, 'YYYY-MM-DD'), end_flag=:2`,
+                    nwhere = `ardb_id=:3 AND branch_code=:4 AND supervisor_code=:5 AND coll_flag=:6 AND end_flag=:7 AND supervisor_trans_no IS NULL`,
+                    transVal = ['N', dateFormat(new Date(), "yyyy-mm-dd"), 'Y', value.ardb_id, value.branch_code, value.supervisor_code, 'Y', 'N'];
+                var nres_dt = await F_Insert(0, "md_supervisor_trans", nfields, null, transVal, nwhere, 1);
+                res.json({
+                    "success": nres_dt,
+                    "status": true
+                });
+            }
+        } else {
+            res.json({
+                "error": "No data found in supervisor transaction.",
+                "status": false
+            });
+        }
+
+    } catch (error) {
+        res.json({
+            "error": "Something went wrong. Please try again later.",
+            "status": false,
+        });
+    }
+})
+
 module.exports = { transRouter }
