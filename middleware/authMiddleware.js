@@ -58,15 +58,5 @@ module.exports = {
     res.locals.userToken = req.cookies.auth_token;
     // res.locals.path = req.path;
     next();
-  },
-  socketMiddleware: (socket, next) => {
-    const token = socket.handshake.auth.token || socket.handshake.headers.cookie?.split("=")[1];
-    
-    if (!token) return next(new Error("Authentication error"));
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-      if (err) return next(new Error("Authentication error"));
-      socket.user = decoded;
-      next();
-    });
   }
 }

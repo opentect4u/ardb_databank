@@ -3,7 +3,7 @@ const db_details = require("../config/conString"),
     oracledb = require("oracledb");
 
 try {
-    oracledb.initOracleClient({ libDir: "C:\\instantclient_11_2" });
+    oracledb.initOracleClient({ libDir: process.env.ORACLE_CLIENT_URL });
 } catch (err) {
     console.error("Oracle Client Error:");
     console.error(err);
