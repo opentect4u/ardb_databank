@@ -1,7 +1,7 @@
 <div class="main-panel">
     <div class="content-wrapper px-4 py-4">
         <div class="dashboard-header mb-4">
-            <h3 class="font-weight-bold" style="color: var(--primary-dark);">DDS Collection Overview</h3>
+            <h3 class="font-weight-bold" style="color: var(--primary-dark);">Collection Overview</h3>
             <p class="text-muted">Daily monitoring of collection agent activity and deposit demands.</p>
         </div>
 
@@ -231,14 +231,14 @@
     function drawAgDtColChart1() {
         // Transform into chart format: [Date, Agent1, Agent2, ...]
         const rawData = JSON.parse(agnt_dt_wise_col_data)
-        let agents = [...new Set(rawData.map(r => r.agent_name))];
+        let agents = [...new Set(rawData.map(r => r.supervisor_name))];
         let dates = [...new Set(rawData.map(r => r.trn_dt))];
 
         let chartData = [["Date", ...agents]];
         dates.forEach(date => {
             let row = [date];
             agents.forEach(agent => {
-                let entry = rawData.find(r => r.trn_dt === date && r.agent_name === agent);
+                let entry = rawData.find(r => r.trn_dt === date && r.supervisor_name === agent);
                 row.push(entry ? parseFloat(entry.tot_col_amt) : 0);
             });
             chartData.push(row);
@@ -261,7 +261,7 @@
         var rawData = JSON.parse(agnt_dt_wise_col_data)
 
         // Get agents & dates
-        let agents = [...new Set(rawData.map(r => r.agent_name))];
+        let agents = [...new Set(rawData.map(r => r.supervisor_name))];
         let dates = [...new Set(rawData.map(r => r.trn_dt))];
 
         // Chart data: [Date, Agent1, Agent2, ...]
@@ -269,7 +269,7 @@
         dates.forEach(date => {
             let row = [date];
             agents.forEach(agent => {
-                let entry = rawData.find(r => r.trn_dt === date && r.agent_name === agent);
+                let entry = rawData.find(r => r.trn_dt === date && r.supervisor_name === agent);
                 row.push(entry ? parseFloat(entry.tot_col_amt) : 0);
             });
             chartData.push(row);
