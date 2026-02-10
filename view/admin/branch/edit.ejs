@@ -6,9 +6,9 @@
                     <!-- <button type="button" class="btn btn-primary" id="myBtn">Add</button> -->
                     <h2>Edit Branch Details</h2>
                 </div>
-                <form action="/bank/updatedata_branch" method="post" id="myForm">
+                <form action="/admin/branch/edit" method="post" id="myForm">
                     <input type="hidden" name="branch_id" value="<%= data.length > 0 ? data[0].branch_id : 0 %>">
-                    <input type="hidden" name="user_id" value="<%= data.length > 0 ? data[0].id : '' %>">
+                    <input type="hidden" name="user_id" value="<%= data.length > 0 ? data[0].user_table_id : '' %>">
                     <div class="row">
                         <div class="form-group col-6">
                             <label for="branch_c">Branch Code:</label>

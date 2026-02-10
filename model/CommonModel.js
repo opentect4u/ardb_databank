@@ -47,4 +47,9 @@ const PRINTER_TYPE_MASTER = {
     'PAXA910': 'PAXA910'
 }
 
-module.exports = { PRINTER_TYPE_MASTER, getBlockList, getServiceAreaList, getVillageList }
+const PRINTER_OPT_MASTER = {
+    '2': '2 Inch.',
+    '3': '3 Inch.'
+}
+
+module.exports = { PRINTER_TYPE_MASTER, PRINTER_OPT_MASTER, getBlockList, getServiceAreaList, getVillageList }

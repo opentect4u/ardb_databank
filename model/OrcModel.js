@@ -55,7 +55,7 @@ const F_Select = async (db_id, fields, table_name, where, order, flag, full_quer
 
         let sql = `SELECT ${fields} FROM ${table_name} ${where} ${order}`;
 
-        console.log(sql);
+        // console.log(sql);
         // oracledb.fetchAsString = [oracledb.DATE, oracledb.TIMESTAMP];
 
         const result = await con.execute(full_query ? full_query : sql, [], {
@@ -99,7 +99,7 @@ const F_Insert = async (db_id, table_name, fields, fieldIndex, values, where, fl
             ? `UPDATE ${table_name} SET ${fields} WHERE ${where}`
             : `INSERT INTO ${table_name} (${fields}) VALUES ${fieldIndex}`;
 
-        console.log(sql, values);
+        // console.log(sql, values);
         
 
         const result = await con.execute(sql, values, { autoCommit: true });

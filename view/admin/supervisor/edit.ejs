@@ -7,8 +7,8 @@
                     <h2><i class="fa fa-arrow-circle-left" aria-hidden="true" id="back"
                             style="cursor: pointer;">&nbsp;Edit Agent Details</i></h2>
                 </div>
-                <form action="/super-admin/update_agent_data" id="myForm" method="post">
-                    <input type="hidden" name="bank" value="<%= data.bank_id %>">
+                <form action="/admin/supervisor/edit" id="myForm" method="post">
+                    <input type="hidden" name="ardb_id" value="<%= req_data.ardb_id %>">
                     <div class="titleSec">
                         <h5>Branch : <%= data.branch_name %>
                         </h5>
@@ -19,18 +19,25 @@
                             <label for="ardb_id"><b>ARDB Name:</b></label>
                             <select name="ardb_id" class="form-control" id="ardb_id" disabled>
                                 <option value="">Select ARDB Name</option>
-                                <option value="<%= agent_id > 0 ? data.ardb_id : 0 %>"><%= agent_id > 0 ? data.ardb_name : '' %></option>
+                                <% if(ardbList.length > 0){
+                                    ardbList.forEach(dt => {
+                                        var _selected = (req_data.ardb_id == dt.ardb_id) ? 'selected' : ''; %>
+                                        <option value="<%= dt.ardb_id %>" <%= _selected %>>
+                                            <%= dt.ardb_name %>
+                                        </option>
+                                    <% })
+                                } %>
                             </select>
                         </div>
                         <div class="form-group col-6">
                             <label for="branch_c">Branch Code:</label>
                             <input type="text" id="branch_c" name="branch_c" class="form-control"
-                                value="<%= data.branch_code %>" readonly />
+                                value="<%= data.branch_code %>" <%= agent_id > 0 ? 'readonly' : '' %> />
                         </div>
                         <div class="form-group col-6">
-                            <label for="supervisor_code">Agent Code:</label>
+                            <label for="supervisor_code">Supervisor Code:</label>
                             <input type="text" id="supervisor_code" name="user_id" class="form-control"
-                                value="<%= data.supervisor_code %>" readonly />
+                                value="<%= data.supervisor_code %>" <%= agent_id> 0 ? 'readonly' : '' %> />
                         </div>
 
                         <div class="form-group col-6">
@@ -42,7 +49,7 @@
                         <div class="form-group col-6">
                             <label for="email">Email:</label>
                             <input type="email" id="email" name="email" class="form-control"
-                                value="<%= data.email_id %>" readonly />
+                                value="<%= data.email_id %>" <%= agent_id> 0 ? 'readonly' : '' %> />
                         </div>
 
                         <div class="form-group col-6">
@@ -80,8 +87,21 @@
                                     <% }) } %>
                             </select>
                         </div>
-
                         <div class="form-group col-6">
+                            <label for="print_opt">Printer Type :</label>
+                            <select name="print_opt" id="print_opt" class="form-control" required>
+                                <option value="">Select Printer Type</option>
+                                <% if(Object.keys(print_opt).length> 0){
+                                    Object.keys(print_opt).forEach(dt => {
+                                    var _selected = (data.print_opt == dt) ? 'selected' : ''; %>
+                                    <option value="<%= dt %>" <%=_selected %>>
+                                        <%= print_opt[dt] %>
+                                    </option>
+                                    <% }) } %>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-6 mt-4">
                             <label for="success"></label>
                             <input type="checkbox" value="Y" id="myCheckbox" data-toggle="toggle" data-onstyle="success"
                                 data-offstyle="danger" data-on="Active" data-off="Deactive" name="agent_active"
