@@ -10,25 +10,26 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a class="nav-link d-flex align-items-center" href="/admin/upload_logo">
                 <i class="mdi mdi-image-plus mr-3"></i>
                 <span class="menu-title">Upload Logo</span>
             </a>
-        </li>
+        </li> -->
 
         <div class="sidebar-divider mx-4 my-3" style="border-top: 1px solid var(--border-color);"></div>
         <div class="sidebar-header px-4 pb-2">
             <small class="text-uppercase font-weight-bold"
                 style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px;">Management</small>
         </div>
-
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="/admin/branch">
-                <i class="mdi mdi-office-building-outline mr-3"></i>
-                <span class="menu-title">Branches</span>
-            </a>
-        </li>
+        <% if(['S', 'B'].includes(user.user_data.msg[0].user_type)){ %>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="/admin/branch">
+                    <i class="mdi mdi-office-building-outline mr-3"></i>
+                    <span class="menu-title">Branches</span>
+                </a>
+            </li>
+        <% } %>
 
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center" href="/admin/supervisor">
@@ -37,61 +38,70 @@
             </a>
         </li>
 
+        <% if(user.user_data.msg[0].user_type == 'R'){ %>
+            <div class="sidebar-divider mx-4 my-3" style="border-top: 1px solid var(--border-color);"></div>
+            <div class="sidebar-header px-4 pb-2">
+                <small class="text-uppercase font-weight-bold"
+                    style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px;">Operations</small>
+            </div>
+            
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="/admin/operation/upload_pctx">
+                    <i class="mdi mdi-office-building-outline mr-3"></i>
+                    <span class="menu-title">Upload PCTX</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="/admin/show_upload_account">
+                    <i class="mdi mdi-account-group-outline mr-3"></i>
+                    <span class="menu-title">View Account</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="/admin/pcrx/download_pcrx">
+                    <i class="mdi mdi-account-group-outline mr-3"></i>
+                    <span class="menu-title">Download PCRX</span>
+                </a>
+            </li>
+
+            <% if(user.user_data.msg[0].max_day_entry_flag!='D' ){ %>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="/admin/col_days">
+                        <i class="mdi mdi-calendar-check-outline mr-3"></i>
+                        <span class="menu-title">Collection Days</span>
+                    </a>
+                </li>
+            <% } %>
+        <% } %>
+
         <div class="sidebar-divider mx-4 my-3" style="border-top: 1px solid var(--border-color);"></div>
         <div class="sidebar-header px-4 pb-2">
             <small class="text-uppercase font-weight-bold"
-                style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px;">Operations</small>
+                style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px;">Reports</small>
         </div>
-        
+
         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="/admin/operation/upload_pctx">
-                <i class="mdi mdi-office-building-outline mr-3"></i>
-                <span class="menu-title">Upload PCTX</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="/admin/show_upload_account">
-                <i class="mdi mdi-account-group-outline mr-3"></i>
-                <span class="menu-title">View Account</span>
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="/admin/supervisor">
-                <i class="mdi mdi-account-group-outline mr-3"></i>
-                <span class="menu-title">Download PCRX</span>
+            <a class="nav-link d-flex align-items-center" href="/admin/report/day_scroll_report">
+                <i class="mdi mdi-file-chart-outline mr-3"></i>
+                <span class="menu-title">Day Scroll Report</span>
             </a>
         </li>
 
-        <% if(user.user_data.msg[0].max_day_entry_flag!='D' ){ %>
-            <li class="nav-item">
-                <a class="nav-link d-flex align-items-center" href="/admin/col_days">
-                    <i class="mdi mdi-calendar-check-outline mr-3"></i>
-                    <span class="menu-title">Collection Days</span>
-                </a>
-            </li>
-            <% } %>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="/admin/report/account_type_wise_report">
+                <i class="mdi mdi-finance mr-3"></i>
+                <span class="menu-title">Account Report</span>
+            </a>
+        </li>
 
-                <div class="sidebar-divider mx-4 my-3" style="border-top: 1px solid var(--border-color);"></div>
-                <div class="sidebar-header px-4 pb-2">
-                    <small class="text-uppercase font-weight-bold"
-                        style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px;">Reports</small>
-                </div>
-
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center" href="/bank/day_scroll_report">
-                        <i class="mdi mdi-file-chart-outline mr-3"></i>
-                        <span class="menu-title">Day Scroll Report</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center" href="/admin/account_type_wise_report">
-                        <i class="mdi mdi-finance mr-3"></i>
-                        <span class="menu-title">Account Report</span>
-                    </a>
-                </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="/admin/report/summary_report">
+                <i class="mdi mdi-cogs mr-3" aria-hidden="true"></i>
+                <span class="menu-title">Summary report</span>
+            </a>
+        </li>
     </ul>
 </nav>
 

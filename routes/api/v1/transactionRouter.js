@@ -1,6 +1,6 @@
 const transRouter = require('express').Router()
 
-const { F_Select, F_Insert } = require('../../../model/OrcModel');
+const { F_Select, F_Insert, callLoanInterestProcedure } = require('../../../model/OrcModel');
 const Joi = require('joi'),
     dateFormat = require('dateformat');
 
@@ -454,7 +454,10 @@ transRouter.post('/calculate_intt', async (req, res) => {
             supervisor_code: Joi.string().required(),
             product_id: Joi.string().required(),
             collection_start_dt: Joi.string().required(),
-            calculate_dt: Joi.string().required()
+            calculate_dt: Joi.string().required(),
+            curr_intt: Joi.number().required(),
+            ovd_intt: Joi.number().required(),
+            penal_intt: Joi.number().required(),
         });
         const { error, value } = schema.validate(req.body, { abortEarly: false });
         if (error) {
@@ -466,14 +469,43 @@ transRouter.post('/calculate_intt', async (req, res) => {
         }
 
         console.log(value);
+        
 
+        function isDateInCurrentFinancialYear(inputDate) {
+            const date = new Date(inputDate);
+            if (isNaN(date)) return false;
+
+            const today = new Date();
+            const currentYear = today.getFullYear();
+
+            // Financial year start & end
+            const fyStart = new Date(
+                today.getMonth() >= 3 ? currentYear : currentYear - 1,
+                3, 1, 0, 0, 0, 0
+            ); // 1 April
+
+            const fyEnd = new Date(
+                today.getMonth() >= 3 ? currentYear + 1 : currentYear,
+                2, 31, 23, 59, 59, 999
+            ); // 31 March
+
+            return date >= fyStart && date <= fyEnd;
+        }
+
+        var chkFinYearFlag = isDateInCurrentFinancialYear(value.calculate_dt);
+        
+        var cal_intt = await callLoanInterestProcedure(0, {
+            ardb_cd: value.ardb_id,
+            loan_id: value.product_id,
+            intt_calc_flag: chkFinYearFlag ? 'N' : 'Y'
+        })
 
         res.json({
             "success": {
                 suc: 1, msg: {
-                    curr_intt_calculated: 0,
-                    ovd_intt_calculated: 0,
-                    penal_intt_calculated: 0,
+                    curr_intt_calculated: cal_intt.suc > 0 ? cal_intt.AD_CURR_INTT - value.curr_intt : 0,
+                    ovd_intt_calculated: cal_intt.suc > 0 ? cal_intt.AD_OVD_INTT - value.ovd_intt : 0,
+                    penal_intt_calculated: cal_intt.suc > 0 ? cal_intt.AD_PENAL_INTT - value.penal_intt : 0,
                     curr_intt_demand_calculated: 0,
                     ovd_intt_demand_calculated: 0,
                     penal_intt_demand_calculated: 0

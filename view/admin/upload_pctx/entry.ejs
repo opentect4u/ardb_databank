@@ -66,11 +66,12 @@
                                                     id="supervisor_id">
                                                     <option value="">Select Supervisor</option>
                                                     <% data.forEach(function(item) { %>
-                                                        <option value="<%= item.supervisor_id %>">
+                                                        <option value="<%= item.supervisor_id %>" data-code="<%= item.supervisor_code %>">
                                                             <%= item.user_id %>, <%= item.supervisor_name %>
                                                         </option>
                                                         <% }); %>
                                                 </select>
+                                                <input type="hidden" id="sup_code">
                                             </div>
                                         </div>
                         </div>
@@ -117,8 +118,8 @@
                                         <select class="form-control block-select" required>
                                             <option value="">Select Block</option>
                                             <% block_list.forEach(function(item) { %>
-                                                <option value="<%= item.BLOCK_ID %>">
-                                                    <%= item.BLOCK_NAME %>
+                                                <option value="<%= item.block_id %>">
+                                                    <%= item.block_name %>
                                                 </option>
                                                 <% }); %>
                                         </select>
@@ -193,6 +194,13 @@
 <script>
     let rowCounter = 1;
     let savedData = [];
+
+    $(document).ready(function () {
+        $(".loader_div").hide();
+        $("#uploadButton").attr("disabled", true);
+        $(".progressbar_viw").hide();
+        $("#progressBar").css("width", "0%");
+    })
 
     // Helper to get row context
     function getRowContext(element) {
@@ -278,6 +286,8 @@
                 $("#showAgent").text(response.msg[0].user_id);
                 $("#showPhone_no").text(response.msg[0].phone_no);
                 $("#maxAllColAmt").text(response.msg[0].max_amt);
+
+                $('#sup_code').val(response.msg[0].user_id)
                 <% if (user.user_data.msg[0].sec_amt_type == 'A') { %>
                     if (response.msg[0].account_no) {
                         $("#showAccountno").text(response.msg[0].account_no);
@@ -306,7 +316,7 @@
                 data: { ardb_id, block_id },
                 success: function (response) {
                     response.msg.forEach(function (resData) {
-                        $serviceSelect.append('<option value="' + resData.SERVICE_AREA_ID + '">' + resData.SERVICE_AREA_NAME + '</option>');
+                        $serviceSelect.append('<option value="' + resData.service_area_id + '">' + resData.service_area_name + '</option>');
                     });
                     $serviceSelect.prop('disabled', false);
                 }
@@ -331,7 +341,7 @@
                 success: function (response) {
                     $villSelect.empty();
                     response.msg.forEach(function (resData) {
-                        $villSelect.append('<option value="' + resData.VILL_ID + '">' + resData.VILL_NAME + '</option>');
+                        $villSelect.append('<option value="' + resData.vill_id + '">' + resData.vill_name + '</option>');
                     });
                     $villSelect.prop('disabled', false);
                     $villSelect.trigger('change'); // Notify Select2
@@ -411,12 +421,122 @@
     };
 
     $('#uploadButton').on('click', function () {
+        $("#uploadButton").attr('disabled', true);
+        $(".loader_div").show();
         if (savedData.length === 0) {
             alert("Please save some selections before populating data.");
             return;
         }
         console.log("Final Data to Process:", savedData);
+        let supervisor_code = $("#sup_code").val();
         // Add your logic to send savedData to server if needed
-        alert("Data populated successfully (check console for output)");
+        $.ajax({
+            type: "POST",
+            url: "/admin/operation/check_sync_data_ajax",
+            data: JSON.stringify({ supervisor_code }),
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+
+                if (response) {
+
+                    // alert("Data populated successfully (check console for output)");
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/operation/check_and_collection_ajax",
+                        data: JSON.stringify({ supervisor_code }),
+                        contentType: "application/json",
+                        success: function (response) {
+                            console.log(response);
+                            if (response > 0) {
+                                $(".loader_div").hide();
+                                //alert("Not terminating in collection, an agent");
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Data already uploaded.Collection in progress ! !",
+                                });
+                                $("#uploadButton").attr('disabled', false);
+                            } else {
+                                delete_agent_oldData(supervisor_code)
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            $("#uploadButton").attr('disabled', false);
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Previous data has not been posted in Banking Application!!",
+                    });
+                    $(".loader_div").hide();
+                    $("#uploadButton").attr('disabled', false);
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            },
+        });
+        
+        function delete_agent_oldData(supervisor_code) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/operation/del_all_pctx_file_data_ajax",
+                data: { supervisor_code },
+                success: function (response) {
+                    fitchDatabase(supervisor_code);
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                },
+            });
+        }
+    
+        function fitchDatabase(supervisor_code) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/operation/fetchdata_to_server_ajax",
+                data: { supervisor_code, savedData },
+                success: function (response) {
+                    $(".loader_div").hide();
+                    console.log(response);
+                    if(response.suc > 0)
+                        insert_agent_trans()
+                    Swal.fire("SUCCESS", "Data upload Successful", "success").then((result) => {
+    
+                    });
+                    $("#uploadButton").attr('disabled', false);
+                },
+                error: function (error) {
+                    console.log(error);
+                    $("#agent2_info").hide();
+    
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Data Not uploaded.Collection failed !",
+                    });
+                    $("#uploadButton").attr('disabled', false);
+                },
+            });
+        }
+        function insert_agent_trans() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/operation/create_supervisor_trans_ajax",
+                data: { supervisor_code },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                },
+            });
+        }
     });
+
 </script>

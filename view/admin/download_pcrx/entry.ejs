@@ -1,0 +1,154 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="card col-12">
+            <div class="card-body">
+                <div class="titleSec">
+                    <!-- <button type="button" class="btn btn-primary">Export as CSV</button> -->
+                    <h2>DOWNLOAD PCRX</h2>
+                </div>
+                <!-- <input type="file" name="myFile" class="" id="pctxFile"> -->
+                <div class="row">
+                    <div class="col-sm-12 row">
+                        <div class="form-group col-5">
+                            <label for="agent">From Date:</label>
+                            <input type="date" name="fdate" class="form-control" id="fdate"
+                                value="<%= dateFormat(new Date(), 'yyyy-mm-dd') %>" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label for="agent">To Date:</label>
+                            <input type="date" name="tdate" class="form-control" id="tdate"
+                                value="<%= dateFormat(new Date(), 'yyyy-mm-dd') %>" />
+                        </div>
+                        <div class="form-group col-2">
+                            <label for="agent"> </label>
+                            <input type="button" name="" class="btn btn-primary form-control" id="subbtn"
+                                value="Submit" />
+                        </div>
+
+                        <table class="table pcrxTable">
+                            <thead>
+                                <tr>
+                                    <th>Sl. No.</th>
+                                    <th>Supervisor Name</th>
+                                    <th>Date</th>
+                                    <th>Trans No</th>
+                                    <th>Total Collection</th>
+                                    <th>Total Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var tbody = $(".pcrxTable tbody");
+
+
+    function formatDate(date) {
+        var date = new Date(date);
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        if (day < 10) {
+            day = "0" + day;
+        }
+        if (month < 10) {
+            month = "0" + month;
+        }
+        return day + "/" + month + "/" + year;
+    }
+
+    $("#subbtn").click(function () {
+        transitionNumber();
+    });
+
+    function transitionNumber() {
+        var fDate = $("#fdate").val();
+        var tDate = $("#tdate").val();
+        $("#transitionNumber option:not(:first)").remove();
+        $.ajax({
+            type: "POST",
+            url: "/admin/pcrx/fetch_trans_number_ajax",
+            data: { fDate: fDate, tDate: tDate },
+            beforeSend: function () {
+                $(".loader_div").show()
+            },
+            success: function (response) {
+                tbody.empty();
+                response.msg.forEach(function (item, index) {
+                    var row =
+                    `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.supervisor_name}</td>
+                            <td>${formatDate(item.received_date) }</td>
+                            <td>${item.supervisor_trans_no}</td>
+                            <td>${item.count_account}</td>
+                            <td>${item.amount}</td>
+                            <td>
+                                <button agent_code="${item.supervisor_code}" transaction_number="${item.supervisor_trans_no}" id="fetchDataBtn" class="fetchDataBtn dwnbtn btn btn-${(item.download_flag == "Y" ? "danger" : "primary")}" ${item.download_flag == "Y" ? 'disabled' : ''}><i class="fa fa-upload"></i> Send Data</button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+            },
+            complete: function () {
+                $(".loader_div").hide()
+            },
+            error: function (error) {
+                console.log(error);
+                $("#transitionNumber option:not(:first)").remove();
+            },
+        });
+    }
+    transitionNumber();
+    // $("#fetchDataBtn").click(function () {
+    $(document).on('click', '.fetchDataBtn', function () {
+        $(".loader_div").show();
+        let transaction_number = $(this).attr('transaction_number');
+        var fDate = $("#fdate").val();
+        var tDate = $("#tdate").val();
+        var agentcode = $(this).attr('agent_code');
+        $(this).prop('disabled', true);
+        // console.log($(this));
+        
+        $.ajax({
+            type: "GET",
+            url: "/admin/pcrx/fetch_pcrx_file_ajax?agent_code=" + agentcode + "&fDate=" + fDate + "&tDate=" + tDate + '&transaction_number=' + transaction_number,
+            success: function (data) {
+                $(".loader_div").hide();
+                console.log(data)
+                if(data.suc > 0){
+                    $(this).removeClass('btn-primary').addClass('btn-danger').html('<i class="fa fa-upload"></i> Sent');
+                }
+                Swal.fire("SUCCESS", "Send data Successful", "success").then((result) => {
+
+                });
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Send Data failed !",
+                });
+                $(".loader_div").hide();
+            }
+        });
+    });
+</script>

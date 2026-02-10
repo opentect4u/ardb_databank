@@ -1,0 +1,134 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="card">
+            <div class="card-body">
+                <div class="titleSec">
+                    <!-- <button type="button" class="btn btn-primary">Export as CSV</button> -->
+                    <h2>Account Type Wise Report</h2>
+                </div>
+                <!-- <input type="file" name="myFile" class="" id="pctxFile"> -->
+                <form action="/admin/report/account_type_wise_report" method="post">
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="from_date">Form Date:</label>
+                            <input type="date" name="from_date" class="form-control" value="<%= selected.from_date %>" required />
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label for="to_date">To Date:</label>
+                            <input type="date" name="to_date" class="form-control" value="<%= selected.to_date %>" required />
+                        </div>
+
+                    </div>
+                    <%- include('../common/pageHeader.ejs') %>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <input type="submit" value="SUBMIT" class="btn btn-primary btn-block" id="downloadButton" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <% if(request == 'POST'){ %>
+            <div class="card" id="">
+                <div class="card-body" id="tableData">
+                    <div class="titleSec">
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 style="text-align: center;">
+                                    <%= user.user_data.msg[0].ardb_name %>
+                                </h4>
+                                <h5 style="text-align: center;">
+                                    <%= user.user_data.msg[0].ardb_address %>
+                                </h5>
+                                <h6 style="text-align: center;">Day Scroll Report Form Date: <%= dateFormat(selected.from_date, 'dd/mm/yyyy') %> To Date: <%= dateFormat(selected.to_date, 'dd/mm/yyyy') %>
+                                </h6>
+                            </div>
+                            <div class="col-6">
+                                <h6 style="text-align: left;">Branch Name: <%= user.user_data.msg[0].branch_code %>
+                                </h6>
+                            </div>
+                            <div class="col-6">
+                                <h6 style="text-align: right;">Date: <%= dateFormat(new Date(), 'dd/mm/yyyy') %>
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <input type="file" name="myFile" class="" id="pctxFile"> -->
+                    <div id="printTag">
+                        <style>
+                            @media print {
+                                .print-inline {
+                                    display: flex;
+                                    justify-content: space-between;
+                                }
+                            }
+                        </style>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sl. No.</th>
+                                    <th>Date</th>
+                                    <th>Account No</th>
+                                    <th>Name</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        
+                                <% var total_amount=0.0;
+                                repo_dt.forEach(function(item,index) {
+                                    total_amount+=item.deposit_amount %>
+                                    <tr>
+                                        <td>
+                                            <%= index + 1 %>
+                                        </td>
+                                        <td>
+                                            <%= dateFormat(item.transaction_date, 'dd/mm/yyyy') %>
+                                        </td>
+                                        <td>
+                                            <%= item.account_number %>
+                                        </td>
+                                        <td>
+                                            <%= item.account_holder_name %>
+                                        </td>
+                                        <td>
+                                            <%= item.deposit_amount %>
+                                        </td>
+                        
+                                    </tr>
+                                    <% }); %>
+                        
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Total</td>
+                                            <td>
+                                                <%=total_amount%>
+                                            </td>
+                        
+                                        </tr>
+                        
+                            </tbody>
+                        </table>
+                    </div>
+            
+            
+                    <div class="mt-2" id="btnclass">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary" id="printMe" onclick="printDiv()">
+                                    Print
+                                </button>
+                                <button id="downloadBtn" class="btn btn-primary">Download Excel</button>
+                            </div>
+                        </div>
+                    </div>
+            
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>

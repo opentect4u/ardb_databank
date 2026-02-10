@@ -55,7 +55,7 @@ const F_Select = async (db_id, fields, table_name, where, order, flag, full_quer
 
         let sql = `SELECT ${fields} FROM ${table_name} ${where} ${order}`;
 
-        // console.log(sql);
+        console.log(sql);
         // oracledb.fetchAsString = [oracledb.DATE, oracledb.TIMESTAMP];
 
         const result = await con.execute(full_query ? full_query : sql, [], {
@@ -152,8 +152,14 @@ const RunProcedure = async (db_id, pro_query, table_name, fields, where, order) 
 
         con = await getConnection(db_id);
 
+        console.log(pro_query, '========= PRocedure Query');
+
         await con.execute(`ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY'`);
         await con.execute(pro_query);
+
+        console.log(`SELECT ${fields} FROM ${table_name} ${where} ${order}`, '////////////////// SQL/////////');
+        
+        
 
         const r = await con.execute(`SELECT ${fields} FROM ${table_name} ${where} ${order}`, [], {
             resultSet: true,
@@ -176,6 +182,71 @@ const RunProcedure = async (db_id, pro_query, table_name, fields, where, order) 
                 console.error("Error closing connection:", err);
             }
         }
+    }
+};
+
+const callLoanInterestProcedure = async (db_id, input) => {
+    let con;
+    try {
+        con = await getConnection(db_id);
+
+        const sql = `
+            BEGIN
+                P_LOAN_INTT_CALCULATION(
+                    :AS_ARDB_CD,
+                    :AS_LOAN_ID,
+                    :AS_INTT_CALC_FLAG,
+                    :AD_CURR_INTT,
+                    :AD_OVD_INTT,
+                    :AD_PENAL_INTT
+                );
+            END;
+        `;
+
+        const binds = {
+            AS_ARDB_CD: {
+                dir: oracledb.BIND_IN,
+                val: input.ardb_cd || null
+            },
+            AS_LOAN_ID: {
+                dir: oracledb.BIND_IN,
+                val: input.loan_id || null
+            },
+            AS_INTT_CALC_FLAG: {
+                dir: oracledb.BIND_IN,
+                val: input.intt_calc_flag || null
+            },
+
+            AD_CURR_INTT: {
+                dir: oracledb.BIND_OUT,
+                type: oracledb.NUMBER
+            },
+            AD_OVD_INTT: {
+                dir: oracledb.BIND_OUT,
+                type: oracledb.NUMBER
+            },
+            AD_PENAL_INTT: {
+                dir: oracledb.BIND_OUT,
+                type: oracledb.NUMBER
+            }
+        };
+
+        const result = await con.execute(sql, binds, {
+            autoCommit: false
+        });
+
+        return {
+            suc: 1,
+            AD_CURR_INTT: result.outBinds.AD_CURR_INTT,
+            AD_OVD_INTT: result.outBinds.AD_OVD_INTT,
+            AD_PENAL_INTT: result.outBinds.AD_PENAL_INTT
+        };
+
+    } catch (err) {
+        console.error("Procedure Error:", err);
+        return { suc: 0, msg: err.message };
+    } finally {
+        if (con) await con.close();
     }
 };
 
@@ -247,6 +318,8 @@ const F_Delete = async (db_id, table_name, where) => {
         con = await getConnection(db_id);
 
         const sql = `DELETE FROM ${table_name} WHERE ${where}`;
+        // console.log(sql, '-----------Delete Query');
+        
         const result = await con.execute(sql, [], { autoCommit: true });
 
         const rs = result.rowsAffected;
@@ -300,5 +373,6 @@ module.exports = {
     Api_Insert,
     SendNotification,
     F_Delete,
-    F_insert_bulk_data
+    F_insert_bulk_data,
+    callLoanInterestProcedure
 };

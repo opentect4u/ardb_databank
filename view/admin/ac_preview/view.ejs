@@ -84,16 +84,20 @@
                                 <thead>
                                     <tr>
                                         <th>SL No.</th>
-                                        <th>Account No.</th>
+                                        <th>Loan ID.</th>
                                         <th>Name</th>
                                         <th>Mobile No</th>
-                                        <th>Product Code</th>
+                                        <th>Type</th>
+                                        <th>Opening Date</th>
+                                        <th>Last Intt. Calc. Date</th>
                                         <th>Balance</th>
                                         <th>Demand</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td></td>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -181,12 +185,14 @@
                             var result = [];
                             var tkt_date = new Date(dt.tkt_date)
                             result.push(++i)
-                            result.push(dt.account_number)
-                            result.push(dt.customer_name)
-                            result.push(dt.mobile_no)
-                            result.push(dt.product_code)
-                            result.push(formatDate(dt.opening_date))
-                            result.push(dt.current_balance)
+                            result.push(dt.product_id)
+                            result.push(dt.cust_name)
+                            result.push(dt.phone_no)
+                            result.push(dt.product_type_name)
+                            result.push(formatDate(dt.disb_dt))
+                            result.push(formatDate(dt.last_intt_calc_dt))
+                            result.push(dt.curr_balance)
+                            result.push(dt.curr_demand)
                             return result;
                         })
 

@@ -6,7 +6,6 @@ brnRouter.get('/', async (req, res) => {
     try {
         const user_data = req.user.user_data.msg[0];
         const resData = await getBranchList(user_data.ardb_id, user_data.user_type);
-        // console.log("======///////////=======",resData)
         delete resData.sql
         var viewData = {
             title: "Branch",

@@ -6,7 +6,9 @@ indexAdminRouter.use('/dashboard', authenticateToken, setUserMiddleware, require
 indexAdminRouter.use('/branch', authenticateToken, setUserMiddleware, require('./branchRouter').brnRouter);
 indexAdminRouter.use('/supervisor', authenticateToken, setUserMiddleware, require('./supervisorRouter').supervisorRouter);
 indexAdminRouter.use('/operation', authenticateToken, setUserMiddleware, require('./uploadPCTXRouter') .uploadPctxRouter)
+indexAdminRouter.use('/pcrx', authenticateToken, setUserMiddleware, require('./downloadPCRX').downloadPcrx)
 indexAdminRouter.use('/common', authenticateToken, setUserMiddleware, require('./commonRouter').commonRouter)
 indexAdminRouter.use('/show_upload_account', authenticateToken, setUserMiddleware, require('./viewAcRouter').viewAcRouter)
+indexAdminRouter.use('/report', authenticateToken, setUserMiddleware, require('./reportRouter').reportRouter)
 
 module.exports = {indexAdminRouter};

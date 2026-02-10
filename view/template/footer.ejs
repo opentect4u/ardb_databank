@@ -21,6 +21,159 @@
     }
 </script>
 
+<script>
+    function printDiv() {
+        $("#btnclass").hide();
+        var divToPrint = document.getElementById('printTag');
+
+        var WindowObject = window.open('', 'Print-Window');
+        WindowObject.document.open();
+        WindowObject.document.writeln('<!DOCTYPE html>');
+        WindowObject.document.writeln('<html><head><title></title><style type="text/css">');
+
+
+        WindowObject.document.writeln('@media print { .center { text-align: center;}' +
+            '.inline { display: inline; }' +
+            '.underline { text-decoration: underline; }' +
+            '.left { margin-left: 315px;} ' +
+            '.right { margin-right: 375px; display: inline; }' +
+            'table { border-collapse: collapse; font-size: 17px;}' +
+            'th, td { border: 1px solid black; border-collapse: collapse; padding: 6px;}' +
+            'th, td { }' +
+            '.border { border: 1px solid black; } ' +
+            '.bottom { bottom: 5px; width: 100%; position: fixed; }' +
+            ' footer { position: fixed; bottom: 0;text-align: center; }' +
+            '} </style>');
+        WindowObject.document.writeln('</head><body onload="window.print()">');
+        // WindowObject.document.writeln('<center><img src="assets/images/logo.png" alt=""/>');
+        WindowObject.document.writeln('<h3 style="margin:0; padding:0;text-align:center"><%= user.user_data.msg[0].ardb_name %></h3>');
+
+        WindowObject.document.writeln('<h4 style="margin:0; padding:0;text-align:center"><%= user.user_data.msg[0].ardb_address %></h4>');
+
+        WindowObject.document.writeln('<div class="print-inline"> <h4 style="text-align: left;">Branch Name: <%= user.user_data.msg[0].branch_code %></h4> <h4 style="text-align: right;">Date: <%= new Date() %></h4></div>');
+        WindowObject.document.writeln('<div class="print-inline"><h4 style="text-align: left;">Form Date: <%= typeof selected !== "undefined" ? selected.from_date : "" %></h4> <h4 style="text-align: right;">To Date: <%= typeof selected !== "undefined" ? selected.to_date : "" %></h4> </div>');
+
+
+
+        // WindowObject.document.writeln('<p style="margin:0; padding:0"><b><small>(Regd. No. 41/Cal. of 1963)</small></b></p>');
+        // WindowObject.document.writeln('<p style="margin:0; padding:0">DK Block, Sector- II, Salt Lake City, Kolkata - 700 091, West Bengal</p></center>');
+        WindowObject.document.writeln(divToPrint.innerHTML);
+        // WindowObject.document.writeln('<footer><small>This is an electronically generated report, hence does not require a signature</small></footer>');
+        //WindowObject.document.writeln(divToPrint.innerHTML);
+        WindowObject.document.writeln('</body></html>');
+        WindowObject.document.close();
+        setTimeout(function () {
+            WindowObject.close();
+        }, 10);
+
+
+        $("#btnclass").show();
+
+    }
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+    function exportTableToExcel(tableID, filename) {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(document.getElementById(tableID));
+
+        // Add a new row with the name "hello"
+        XLSX.utils.sheet_add_aoa(ws, [['<%= user.user_data.msg[0].ardb_name %>', '', '', '', '', '', ''], ['Day Scroll Report', '', '', '', '', '', '', ''],
+        ['Branch Name: <%= user.user_data.msg[0].branch_name %>', '', '', '', '', '', '', ''], ['Form Date: <%= typeof selected !== "undefined" ? selected.from_date : "" %>', '', '', '', '', '', '', ''],
+        ['To Date: <%= typeof selected !== "undefined" ? selected.to_date : "" %>', '', '', '', ''], ['Sl. No.', 'Date', 'Supervisor Code', 'Account Type', 'Account No', 'Name', 'Amount']]);
+
+        // Add the worksheet to the workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+        XLSX.writeFile(wb, filename);
+        exit()
+
+        const wbout = XLSX.write(ws, {
+            bookType: 'xlsx',
+            bookSST: true,
+            type: 'binary'
+        });
+
+        function s2ab(s) {
+            const buf = new ArrayBuffer(s.length);
+            const view = new Uint8Array(buf);
+            for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+
+        const blob = new Blob([s2ab(wbout)], {
+            type: 'application/octet-stream'
+        });
+        saveAs(blob, filename);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const downloadBtn = document.getElementById('downloadBtn');
+        downloadBtn.addEventListener('click', function () {
+            // Call the exportTableToExcel function, passing the table ID and desired filename
+            exportTableToExcel('tableData', 'Day_Scroll_Report.xlsx');
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        var ardb_id = $('#ardb_id').length > 0 ? $('#ardb_id').val() : null,
+            branch_code = $('#branch_code').length > 0 ? $('#branch_code').val() : null;
+        if(ardb_id > 0 && branch_code > 0){
+            $('#branch_code').change();
+        }else if(ardb_id > 0){
+            $('#ardb_id').change();
+        }
+    })
+    $('#ardb_id').on('change', function () {
+        let ardb_id = $(this).val();
+        const selected = {
+            branch_code: '<%= typeof selected !== "undefined" ? selected.branch_code : "" %>',
+        }
+        $.ajax({
+            type: "GET",
+            url: "/admin/branch/get_brn_list_ajax",
+            data: { ardb_id: ardb_id },
+            success: function (response) {
+                $('#branch_code').empty().append(`<option value="">Select Branch Name</option>`);
+                response.msg.forEach(function (resData) {
+                    let _selected = '';
+                    if (selected.branch_code == resData.branch_code) _selected = 'selected'
+                    $('#branch_code').append('<option value="' + resData.branch_code + '"'+ _selected +'>' + resData.branch_name + '</option>');
+                });
+            }
+        });
+    });
+    $('#branch_code').on('change', function () {
+        let branch_code = $(this).val(),
+            ardb_id = $('#ardb_id').val();
+        const enc_dt = window.btoa(JSON.stringify({ ardb_id, branch_code, id: 0 }));
+        const selected = {
+            supervisor_code: '<%= typeof selected !== "undefined" ? selected.supervisor_code : "" %>',
+        }
+        console.log(selected, '---------sup_code----------');
+        
+        $.ajax({
+            type: "POST",
+            url: "/admin/supervisor/get_sup_ajax",
+            data: { enc_dt },
+            success: function (response) {
+                $('#supervisor_code').empty().append(`<option value="">Select Supervisor</option>`);
+                response.msg.forEach(function (resData) {
+                    let _selected = '';
+                    if (selected.supervisor_code == resData.supervisor_code) _selected = 'selected'
+                    $('#supervisor_code').append('<option value="' + resData.supervisor_code + '"'+ _selected +'>' + resData.user_id + ', ' + resData.supervisor_name + '</option>');
+                });
+            }
+        });
+    });
+</script>
+
 
 <% if (error.length> 0) { %>
     <script>
