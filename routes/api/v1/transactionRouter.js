@@ -466,38 +466,14 @@ transRouter.post('/calculate_intt', async (req, res) => {
                 errors[detail.context.key] = detail.message;
             });
             return res.json({ error: errors });
-        }
+        }        
 
-        console.log(value);
-        
-
-        function isDateInCurrentFinancialYear(inputDate) {
-            const date = new Date(inputDate);
-            if (isNaN(date)) return false;
-
-            const today = new Date();
-            const currentYear = today.getFullYear();
-
-            // Financial year start & end
-            const fyStart = new Date(
-                today.getMonth() >= 3 ? currentYear : currentYear - 1,
-                3, 1, 0, 0, 0, 0
-            ); // 1 April
-
-            const fyEnd = new Date(
-                today.getMonth() >= 3 ? currentYear + 1 : currentYear,
-                2, 31, 23, 59, 59, 999
-            ); // 31 March
-
-            return date >= fyStart && date <= fyEnd;
-        }
-
-        var chkFinYearFlag = isDateInCurrentFinancialYear(value.calculate_dt);
-        
+        var chkFinYearFlag = dateFormat(value.calculate_dt, "mm-dd") == '03-31' ? true : false;
+                
         var cal_intt = await callLoanInterestProcedure(0, {
-            ardb_cd: value.ardb_id,
+            ardb_cd: value.ardb_id.toString(),
             loan_id: value.product_id,
-            intt_calc_flag: chkFinYearFlag ? 'N' : 'Y'
+            intt_calc_flag: !chkFinYearFlag ? 'N' : 'Y'
         })
 
         res.json({

@@ -231,6 +231,7 @@ const callLoanInterestProcedure = async (db_id, input) => {
             }
         };
 
+        await con.execute(`ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY'`);
         const result = await con.execute(sql, binds, {
             autoCommit: false
         });
