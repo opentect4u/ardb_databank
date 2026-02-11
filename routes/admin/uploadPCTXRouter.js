@@ -49,11 +49,11 @@ uploadPctxRouter.post('/check_sync_data_ajax', async (req, res) => {
         //db connection
         let fields = "COUNT(*) AS count",
             table_name = "TD_COLL_ACC_DTLS",
-            where = `branch_code ='${user_data.branch_code}' AND supervisor_code = ${supervisor_code} AND  data_trf NOT IN ('N','P')`,
+            where = `branch_code ='${user_data.branch_code}' AND supervisor_code = ${supervisor_code} AND  trf_flag NOT IN ('N','P')`,
             order = null,
             flag = 0;
 
-        var unsync_data = await F_Select(user_data.bank_id, fields, table_name, where, order, flag)
+        var unsync_data = await F_Select(0, fields, table_name, where, order, flag)
 
         // console.log("========================///////",unsync_data.msg)
         if (unsync_data.suc > 0){
@@ -76,8 +76,8 @@ uploadPctxRouter.post('/check_and_collection_ajax', async (req, res) => {
         const user_data = req.user.user_data.msg[0];
         var select_q = "COUNT(*) AS count";
         var whr = `ardb_id='${user_data.ardb_id}' AND branch_code='${user_data.branch_code}' AND supervisor_code='${supervisor_code}' AND coll_flag='Y' AND end_flag='N' AND supervisor_trans_no IS NULL AND received_date IS NULL ORDER BY send_date DESC `;
-        let res_dt = await F_Select(0, select_q, "md_supervisor_trans", whr, 0);
-        console.log(res_dt);
+        let res_dt = await F_Select(0, select_q, "md_supervisor_trans", whr, null, 0);
+        // console.log(res_dt);
         
         let ckhDt = res_dt.suc > 0 ? (res_dt.msg.count == 0 ? 0 : 1) : 1;
         if (ckhDt > 0) {
