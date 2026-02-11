@@ -450,56 +450,56 @@
         console.log("Final Data to Process:", savedData);
         let supervisor_code = $("#sup_code").val();
         // Add your logic to send savedData to server if needed
-        // $.ajax({
-        //     type: "POST",
-        //     url: "/admin/operation/check_sync_data_ajax",
-        //     data: JSON.stringify({ supervisor_code }),
-        //     contentType: "application/json",
-        //     success: function (response) {
-        //         console.log(response);
+        $.ajax({
+            type: "POST",
+            url: "/admin/operation/check_sync_data_ajax",
+            data: JSON.stringify({ supervisor_code }),
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
 
-        //         if (response) {
+                if (response) {
 
-        //             // alert("Data populated successfully (check console for output)");
-        //             $.ajax({
-        //                 type: "POST",
-        //                 url: "/admin/operation/check_and_collection_ajax",
-        //                 data: JSON.stringify({ supervisor_code }),
-        //                 contentType: "application/json",
-        //                 success: function (response) {
-        //                     console.log(response);
-        //                     if (response > 0) {
-        //                         $(".loader_div").hide();
-        //                         //alert("Not terminating in collection, an agent");
-        //                         Swal.fire({
-        //                             icon: "error",
-        //                             title: "Oops...",
-        //                             text: "Data already uploaded.Collection in progress ! !",
-        //                         });
-        //                         $("#uploadButton").attr('disabled', false);
-        //                     } else {
-        //                         delete_agent_oldData(supervisor_code)
-        //                     }
-        //                 },
-        //                 error: function (error) {
-        //                     console.log(error);
-        //                     $("#uploadButton").attr('disabled', false);
-        //                 },
-        //             });
-        //         } else {
-        //             Swal.fire({
-        //                 icon: "error",
-        //                 title: "Oops...",
-        //                 text: "Previous data has not been posted in Banking Application!!",
-        //             });
-        //             $(".loader_div").hide();
-        //             $("#uploadButton").attr('disabled', false);
-        //         }
-        //     },
-        //     error: function (error) {
-        //         console.log(error);
-        //     },
-        // });
+                    // alert("Data populated successfully (check console for output)");
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/operation/check_and_collection_ajax",
+                        data: JSON.stringify({ supervisor_code }),
+                        contentType: "application/json",
+                        success: function (response) {
+                            console.log(response);
+                            if (response > 0) {
+                                $(".loader_div").hide();
+                                //alert("Not terminating in collection, an agent");
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Data already uploaded.Collection in progress ! !",
+                                });
+                                $("#uploadButton").attr('disabled', false);
+                            } else {
+                                delete_agent_oldData(supervisor_code)
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                            $("#uploadButton").attr('disabled', false);
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Previous data has not been posted in Banking Application!!",
+                    });
+                    $(".loader_div").hide();
+                    $("#uploadButton").attr('disabled', false);
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            },
+        });
 
         function delete_agent_oldData(supervisor_code) {
             $.ajax({
