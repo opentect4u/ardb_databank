@@ -31,9 +31,10 @@ const getServiceAreaList = (ardb_id, block_id, service_area_id = 0) => {
 const getVillageList = (ardb_id, block_id, service_area_id, vill_id = 0) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let service_area = Array.isArray(service_area_id) ? service_area_id.join(',') : service_area_id
             let select = 'a.*, b.service_area_name, c.block_name',
                 table_name = 'md_village a, md_service_area b, md_block c',
-                whr = `a.ardb_id=b.ardb_id AND a.block_id=b.block_id AND a.service_area_id=b.service_area_id AND a.ardb_id=c.ardb_id AND a.block_id=c.block_id AND a.ardb_id = ${ardb_id} AND a.block_id = ${block_id} AND a.service_area_id = ${service_area_id} ${vill_id > 0 ? `AND a.vill_id = ${vill_id}` : ''}`;
+                whr = `a.ardb_id=b.ardb_id AND a.block_id=b.block_id AND a.service_area_id=b.service_area_id AND a.ardb_id=c.ardb_id AND a.block_id=c.block_id AND a.ardb_id = ${ardb_id} AND a.block_id = ${block_id} AND a.service_area_id IN(${service_area_id}) ${vill_id > 0 ? `AND a.vill_id = ${vill_id}` : ''}`;
             const res_dt = await F_Select(0, select, table_name, whr, null, 1)
             resolve(res_dt);
         } catch (err) {

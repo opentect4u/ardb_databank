@@ -66,7 +66,8 @@
                                                     id="supervisor_id">
                                                     <option value="">Select Supervisor</option>
                                                     <% data.forEach(function(item) { %>
-                                                        <option value="<%= item.supervisor_id %>" data-code="<%= item.supervisor_code %>">
+                                                        <option value="<%= item.supervisor_id %>"
+                                                            data-code="<%= item.supervisor_code %>">
                                                             <%= item.user_id %>, <%= item.supervisor_name %>
                                                         </option>
                                                         <% }); %>
@@ -126,7 +127,8 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label>Service Area</label>
-                                        <select class="form-control service-area-select" disabled required>
+                                        <select class="form-control service-area-select s2id" multiple disabled
+                                            required>
                                             <option value="">Select Service Area</option>
                                         </select>
                                     </div>
@@ -209,15 +211,26 @@
 
     // Initialize Select2
     function initSelect2(element) {
+        let placeholder = $(element).hasClass('service-area-select') ? "Select Service Area" : "Select Village";
         $(element).select2({
-            placeholder: "Select Village",
+            placeholder: placeholder,
             allowClear: true,
             width: '100%'
+        });
+
+        $(element).on('select2:select', function (e) {
+            if (e.params.data.id === 'all') {
+                let allValues = $(this).find('option').not('[value="all"]').not('[value=""]').map(function () {
+                    return this.value;
+                }).get();
+                $(this).val(allValues).trigger('change');
+            }
         });
     }
 
     // Initial init
     initSelect2('.village-select');
+    initSelect2('.service-area-select');
     $('#supervisor_id').select2({ width: '100%' }); // Also init supervisor if not already
 
     // Dynamic Row Logic
@@ -288,10 +301,10 @@
                 $("#maxAllColAmt").text(response.msg[0].max_amt);
 
                 $('#sup_code').val(response.msg[0].user_id)
-                <% if (user.user_data.msg[0].sec_amt_type == 'A') { %>
+                    <% if (user.user_data.msg[0].sec_amt_type == 'A') { %>
                     if (response.msg[0].account_no) {
-                        $("#showAccountno").text(response.msg[0].account_no);
-                    }
+                            $("#showAccountno").text(response.msg[0].account_no);
+                        }
                 <% } %>
                     $("#uploadButton").attr("disabled", false);
             }
@@ -315,17 +328,19 @@
                 url: "/admin/common/get_service_area_list",
                 data: { ardb_id, block_id },
                 success: function (response) {
+                    $serviceSelect.empty().append('<option value="all">Select All</option>');
                     response.msg.forEach(function (resData) {
                         $serviceSelect.append('<option value="' + resData.service_area_id + '">' + resData.service_area_name + '</option>');
                     });
                     $serviceSelect.prop('disabled', false);
+                    $serviceSelect.trigger('change');
                 }
             });
         }
     });
 
     $(document).on('change', '.service-area-select', function () {
-        const service_area_id = $(this).val();
+        const service_area_id = $(this).val(); // This will be an array now
         const ardb_id = $('#ardb_id').val();
         const block_id = getRowContext(this).find('.block-select').val();
         const $row = getRowContext(this);
@@ -333,15 +348,15 @@
 
         $villSelect.empty().append('<option value="">Select Village</option>').prop('disabled', true);
 
-        if (service_area_id) {
+        if (service_area_id && service_area_id.length > 0) {
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: "/admin/common/get_village_list",
                 data: { ardb_id, block_id, service_area_id },
                 success: function (response) {
-                    $villSelect.empty();
+                    $villSelect.empty().append('<option value="all">Select All</option>');
                     response.msg.forEach(function (resData) {
-                        $villSelect.append('<option value="' + resData.vill_id + '">' + resData.vill_name + '</option>');
+                        $villSelect.append('<option value="' + resData.vill_id + '" data-sa-id="' + resData.service_area_id + '" data-sa-name="' + resData.service_area_name + '">' + resData.vill_name + '</option>');
                     });
                     $villSelect.prop('disabled', false);
                     $villSelect.trigger('change'); // Notify Select2
@@ -367,11 +382,16 @@
             }
 
             village.find('option:selected').each(function () {
+                if ($(this).val() === 'all') return;
+
+                let sa_id = $(this).data('sa-id');
+                let sa_name = $(this).data('sa-name');
+
                 batchData.push({
                     block_id: block.val(),
                     block_name: block.find('option:selected').text().trim(),
-                    service_area_id: service.val(),
-                    service_area_name: service.find('option:selected').text().trim(),
+                    service_area_id: sa_id,
+                    service_area_name: sa_name,
                     vill_id: $(this).val(),
                     vill_name: $(this).text().trim()
                 });
@@ -430,57 +450,57 @@
         console.log("Final Data to Process:", savedData);
         let supervisor_code = $("#sup_code").val();
         // Add your logic to send savedData to server if needed
-        $.ajax({
-            type: "POST",
-            url: "/admin/operation/check_sync_data_ajax",
-            data: JSON.stringify({ supervisor_code }),
-            contentType: "application/json",
-            success: function (response) {
-                console.log(response);
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/admin/operation/check_sync_data_ajax",
+        //     data: JSON.stringify({ supervisor_code }),
+        //     contentType: "application/json",
+        //     success: function (response) {
+        //         console.log(response);
 
-                if (response) {
+        //         if (response) {
 
-                    // alert("Data populated successfully (check console for output)");
-                    $.ajax({
-                        type: "POST",
-                        url: "/admin/operation/check_and_collection_ajax",
-                        data: JSON.stringify({ supervisor_code }),
-                        contentType: "application/json",
-                        success: function (response) {
-                            console.log(response);
-                            if (response > 0) {
-                                $(".loader_div").hide();
-                                //alert("Not terminating in collection, an agent");
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Oops...",
-                                    text: "Data already uploaded.Collection in progress ! !",
-                                });
-                                $("#uploadButton").attr('disabled', false);
-                            } else {
-                                delete_agent_oldData(supervisor_code)
-                            }
-                        },
-                        error: function (error) {
-                            console.log(error);
-                            $("#uploadButton").attr('disabled', false);
-                        },
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Previous data has not been posted in Banking Application!!",
-                    });
-                    $(".loader_div").hide();
-                    $("#uploadButton").attr('disabled', false);
-                }
-            },
-            error: function (error) {
-                console.log(error);
-            },
-        });
-        
+        //             // alert("Data populated successfully (check console for output)");
+        //             $.ajax({
+        //                 type: "POST",
+        //                 url: "/admin/operation/check_and_collection_ajax",
+        //                 data: JSON.stringify({ supervisor_code }),
+        //                 contentType: "application/json",
+        //                 success: function (response) {
+        //                     console.log(response);
+        //                     if (response > 0) {
+        //                         $(".loader_div").hide();
+        //                         //alert("Not terminating in collection, an agent");
+        //                         Swal.fire({
+        //                             icon: "error",
+        //                             title: "Oops...",
+        //                             text: "Data already uploaded.Collection in progress ! !",
+        //                         });
+        //                         $("#uploadButton").attr('disabled', false);
+        //                     } else {
+        //                         delete_agent_oldData(supervisor_code)
+        //                     }
+        //                 },
+        //                 error: function (error) {
+        //                     console.log(error);
+        //                     $("#uploadButton").attr('disabled', false);
+        //                 },
+        //             });
+        //         } else {
+        //             Swal.fire({
+        //                 icon: "error",
+        //                 title: "Oops...",
+        //                 text: "Previous data has not been posted in Banking Application!!",
+        //             });
+        //             $(".loader_div").hide();
+        //             $("#uploadButton").attr('disabled', false);
+        //         }
+        //     },
+        //     error: function (error) {
+        //         console.log(error);
+        //     },
+        // });
+
         function delete_agent_oldData(supervisor_code) {
             $.ajax({
                 type: "POST",
@@ -495,7 +515,7 @@
                 },
             });
         }
-    
+
         function fitchDatabase(supervisor_code) {
             $.ajax({
                 type: "POST",
@@ -504,17 +524,17 @@
                 success: function (response) {
                     $(".loader_div").hide();
                     console.log(response);
-                    if(response.suc > 0)
+                    if (response.suc > 0)
                         insert_agent_trans()
                     Swal.fire("SUCCESS", "Data upload Successful", "success").then((result) => {
-    
+
                     });
                     $("#uploadButton").attr('disabled', false);
                 },
                 error: function (error) {
                     console.log(error);
                     $("#agent2_info").hide();
-    
+
                     Swal.fire({
                         icon: "error",
                         title: "Oops...",

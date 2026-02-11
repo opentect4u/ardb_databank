@@ -14,8 +14,10 @@ commonRouter.get('/get_service_area_list', async (req, res) => {
     res.send(res_dt)
 })
 
-commonRouter.get('/get_village_list', async (req, res) => {
-    const data = req.query
+commonRouter.post('/get_village_list', async (req, res) => {
+    const data = req.body
+    console.log(data);
+    
     let res_dt = await getVillageList(data.ardb_id, data.block_id, data.service_area_id)
     res.send(res_dt)
 })
