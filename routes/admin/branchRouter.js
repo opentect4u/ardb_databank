@@ -8,7 +8,7 @@ const { F_Insert } = require('../../model/OrcModel');
 brnRouter.get('/', async (req, res) => {
     try {
         const user_data = req.user.user_data.msg[0];
-        const resData = await getBranchList(user_data.ardb_id, user_data.user_type);
+        const resData = await getBranchList(user_data.ardb_id, 'R');
         delete resData.sql
         var viewData = {
             title: "Branch",
@@ -28,7 +28,7 @@ brnRouter.get('/edit/:id', async (req, res) => {
     const id = req.params.id || 0;
     const user_data = req.user.user_data.msg[0];
 
-    const resData = id > 0 ? await getBranchList(user_data.ardb_id, user_data.user_type, id) : { suc: 1, msg: [] };
+    const resData = id > 0 ? await getBranchList(user_data.ardb_id, 'R', id) : { suc: 1, msg: [] };
 
     delete resData.sql
     var viewData = {
@@ -107,7 +107,7 @@ brnRouter.post('/edit', async (req, res) => {
 brnRouter.get('/get_brn_list_ajax', async (req, res) => {
     try {
         const user_data = req.user.user_data.msg[0];
-        const resData = await getBranchList(user_data.ardb_id, user_data.user_type);
+        const resData = await getBranchList(user_data.ardb_id, 'R');
         // console.log("======///////////=======",resData)
         delete resData.sql
         res.send(resData);

@@ -49,7 +49,7 @@ uploadPctxRouter.post('/check_sync_data_ajax', async (req, res) => {
         //db connection
         let fields = "COUNT(*) AS count",
             table_name = "TD_COLL_ACC_DTLS",
-            where = `branch_code ='${user_data.branch_code}' AND supervisor_code = ${supervisor_code} AND  trf_flag NOT IN ('N','P')`,
+            where = `ardb_id = ${user_data.ardb_id} AND branch_code ='${user_data.branch_code}' AND supervisor_code = '${supervisor_code}' AND  trf_flag IN ('N','P')`,
             order = null,
             flag = 0;
 

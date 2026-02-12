@@ -31,16 +31,13 @@
                         <div class="form-group col-4">
                             <label for="email">Email:</label>
                             <input type="email" name="email" class="form-control" id="email"
-                                value="<%= data.length > 0 ? data[0].email_id : '' %>" required />
+                                value="<%= data.length > 0 ? data[0].email_id : '' %>" required <%= data.length> 0 ? 'readonly' : '' %> />
                         </div>
                         <div class="form-group col-4">
                             <label for="mobile">Mobile No.:</label>
                             <input type="text" name="mobile" class="form-control" id="mobile"
                                 value="<%= data.length > 0 ? data[0].phone_no : '' %>" required />
                         </div>
-
-
-
 
                         <div class="form-group col-12">
                             <label for="branch_address">Address :</label>

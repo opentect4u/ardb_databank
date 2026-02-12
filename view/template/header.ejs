@@ -31,22 +31,8 @@
         }
     </style>
     <style>
-        .loader {
-            border: 16px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 16px solid #3498db;
-            width: 120px;
-            height: 120px;
-            -webkit-animation: spin 2s linear infinite;
-            animation: spin 2s linear infinite;
-
-            position: absolute;
-            top: 50%;
-            /* Center vertically */
-            left: 50%;
-            /* Center horizontally */
-            transform: translate(-50%, -50%);
-            /* Center the loader */
+        .error {
+            color: red;
         }
 
         .cust-toggle .toggle {
@@ -55,29 +41,6 @@
 
         .cust-toggle1 .toggle {
             width: 50% !important;
-        }
-
-
-
-        /* Safari */
-        @-webkit-keyframes spin {
-            0% {
-                -webkit-transform: rotate(0deg);
-            }
-
-            100% {
-                -webkit-transform: rotate(360deg);
-            }
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
         }
     </style>
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"

@@ -169,17 +169,36 @@ label {
 
 /* Loader */
 .loader_div {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.9) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    /* Dark overlay */
 }
 
 .loader {
-    border: 4px solid var(--border-color);
-    border-top: 4px solid var(--primary-green);
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid var(--primary-green);
+    border-radius: 50%;
     width: 60px;
     height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Scrollbar Styling */
