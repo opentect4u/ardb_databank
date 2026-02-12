@@ -530,6 +530,15 @@ transRouter.post('/end_collection', async (req, res) => {
             let resData = await F_Select(0, select, "td_collection", where, null, 0);
 
             if (resData.msg.total_collection > 0) {
+                let selectedReceiptNoQuery = await F_Select(0, 'receipt_no', 'td_collection', where, null, 1)
+                console.log(selectedReceiptNoQuery);
+                
+                let selectedReceiptNo = selectedReceiptNoQuery.suc > 0 ? selectedReceiptNoQuery.msg.map(item => item.receipt_no.toString()).join(',') : '0';
+
+                console.log(selectedReceiptNo, 'RECEIPT NOS---------------');
+                
+
+
                 let dbvalers = `supervisor_trans_no=:0`,
                     dbwhere = `ardb_id=:1 AND branch_code=:2 AND supervisor_code=:3 AND supervisor_trans_no IS NULL`,
                     colVal = [currSupTransNo, value.ardb_id, value.branch_code, value.supervisor_code];
@@ -539,6 +548,12 @@ transRouter.post('/end_collection', async (req, res) => {
                         wherre = `ardb_id=:4 AND branch_code=:5 AND supervisor_code=:6 AND coll_flag=:7 AND end_flag=:8 AND supervisor_trans_no IS NULL`,
                         transVal = [currSupTransNo, 'N', dateFormat(new Date(), "yyyy-mm-dd"), 'Y', value.ardb_id, value.branch_code, value.supervisor_code, 'Y', 'N'];
                     let res_dt = await F_Insert(0, "md_supervisor_trans", fields, null, transVal, wherre, 1);
+
+                    let colTabValues = `trf_flag=:0`,
+                        colTabWhr = `receipt_no IN (${selectedReceiptNo})`,
+                        colTabVal = ['P'];
+                    let update_res = await F_Insert(0, "TD_COLL_ACC_DTLS", colTabValues, null, colTabVal, colTabWhr, 1);
+
                     res.json({
                         "success": res_dt,
                         "status": true

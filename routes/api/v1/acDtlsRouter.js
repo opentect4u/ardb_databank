@@ -22,7 +22,7 @@ acRouter.post('/search_account', async (req, res) => {
         }
         const table_name = "td_account_dtls"
         var whrDAta = `ardb_id=${value.ardb_id} AND branch_code='${value.branch_code}' AND supervisor_code='${value.supervisor_code}' AND acc_type = '${value.flag}' AND (lower(cust_name) LIKE '%${value.account_number.toLowerCase()}%' OR product_id LIKE '%${value.account_number}%' OR cust_id LIKE '%${value.account_number}%')`,
-            selectData = "account_dtls_id, ardb_id, branch_code, supervisor_code, acc_type, product_type_name, product_id, phone_no, cust_name, TO_CHAR(disb_dt, 'YYYY-MM-DD') disb_dt, (curr_prn + ovd_prn + curr_intt + ovd_intt + penal_intt + other_charges) current_balance, (curr_prn_demand + ovd_prn_demand + curr_intt_demand + ovd_intt_demand + penal_intt_demand) current_demand";
+            selectData = "account_dtls_id, ardb_id, branch_code, supervisor_code, acc_type, fund_type, product_type_name, product_id, phone_no, cust_name, TO_CHAR(disb_dt, 'YYYY-MM-DD') disb_dt, (curr_prn + ovd_prn + curr_intt + ovd_intt + penal_intt + other_charges) current_balance, (curr_prn_demand + ovd_prn_demand + curr_intt_demand + ovd_intt_demand + penal_intt_demand) current_demand";
         const order = null
         let res_data = await F_Select(0, selectData, table_name, whrDAta, order, 1);
 
