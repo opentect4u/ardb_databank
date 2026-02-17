@@ -456,7 +456,7 @@
             data: JSON.stringify({ supervisor_code }),
             contentType: "application/json",
             success: function (response) {
-                console.log(response);
+                // console.log(response);
 
                 if (response) {
                     $.ajax({
@@ -481,6 +481,7 @@
                         },
                         error: function (error) {
                             console.log(error);
+                            $(".loader_div").hide();
                             $("#uploadButton").attr('disabled', false);
                         },
                     });
@@ -495,6 +496,7 @@
                 }
             },
             error: function (error) {
+                $(".loader_div").hide();
                 console.log(error);
             },
         });
@@ -506,9 +508,10 @@
                 data: { supervisor_code },
                 success: function (response) {
                     fitchDatabase(supervisor_code);
-                    console.log(response);
+                    // console.log(response);
                 },
                 error: function (error) {
+                    $(".loader_div").hide();
                     console.log(error);
                 },
             });
@@ -521,7 +524,7 @@
                 data: { supervisor_code, savedData },
                 success: function (response) {
                     $(".loader_div").hide();
-                    console.log(response);
+                    // console.log(response);
                     if (response.suc > 0)
                         insert_agent_trans()
                     Swal.fire("SUCCESS", "Data upload Successful", "success").then((result) => {
@@ -531,6 +534,7 @@
                 },
                 error: function (error) {
                     console.log(error);
+                    $(".loader_div").hide();
                     $("#agent2_info").hide();
 
                     Swal.fire({
@@ -548,9 +552,10 @@
                 url: "/admin/operation/create_supervisor_trans_ajax",
                 data: { supervisor_code },
                 success: function (response) {
-                    console.log(response);
+                    // console.log(response);
                 },
                 error: function (error) {
+                    $(".loader_div").hide();
                     console.log(error);
                 },
             });

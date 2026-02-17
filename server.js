@@ -12,8 +12,8 @@ app.use(require('cookie-parser')());
 
 app.use(cors())
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '50mb' }))
+app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
 
 app.use(express.static(path.join(__dirname, "assets")));
 
@@ -43,7 +43,7 @@ app.use(
 app.use(flash());
 app.use((req, res, next) => {
     console.log(req.path, 'pppppppppppppppppppppppppppppppppppppppp');
-    
+
     res.locals.currentUser = req.user;
     res.locals.user = req.session.user ? req.session.user : null
     res.locals.path = req.path;
