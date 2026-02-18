@@ -1,0 +1,53 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="card col-12">
+            <div class="card-body">
+                <div class="titleSec">
+                    <h2><i class="fa fa-arrow-circle-left" aria-hidden="true" id="back" style="cursor: pointer;">&nbsp;<%= title %></i></h2>
+                </div>
+                <form action="/admin/sms/edit" method="post" id="myForm">
+                   
+                    <div class="row">
+                        <div class="form-group col-12">
+                             <label for="ardb_id"><b>ARDB Name:<span style="color: rgb(182, 5, 5);">*</span></b></label>
+                        <select name="ardb_id" class="form-control" id="ardb_id" required>
+                            <option value="">Select ARDB Name</option>
+                            <% ardb.msg.forEach(function(item2,index) { %>
+                                <option value="<%=item2.ardb_id%>">
+                                    <%=item2.ardb_name%>
+                                </option>
+                                <% }); %>
+                        </select>
+                        </div>
+                        
+                        <div class="form-group col-12">
+                            <label for="sms">SMS Template:<span style="color: rgb(182, 5, 5);">*</span></label>
+                           <textarea class="form-control" id="sms" name="sms" rows="5" placeholder="Enter template here...." ></textarea>
+                        </div>
+
+                        
+
+                        <div class="form-group col-3">
+                            <input type="submit" value="SUBMIT" class="btn btn-primary btn-block" style="margin-left: 25vw;"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+//     $(document).ready(function () {
+//     $("#back").click(function () {
+//       window.location.href = "/admin/sms";
+//     });
+//   });
+
+ $(document).ready(function () {
+        $("#back").click(function () {
+            event.preventDefault();
+            history.back(1);
+        });
+    });
+</script>

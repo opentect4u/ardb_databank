@@ -14,7 +14,7 @@ viewAcRouter.get('/', async (req, res) => {
     let req_data = req.query.enc_dt ? Buffer.from(req.query.enc_dt, 'base64').toString() : null;
     req_data = req_data ? JSON.parse(req_data) : null;
 
-    console.log(req_data);
+    // console.log(req_data);
 
 
     const selected = {
@@ -38,7 +38,7 @@ viewAcRouter.post('/fetch_ac_dtls_ajax', async (req, res) => {
     let req_data = req.body.enc_dt ? Buffer.from(req.body.enc_dt, 'base64').toString() : null;
     req_data = req_data ? JSON.parse(req_data) : null;
 
-    console.log(req_data, 'req data');
+    // console.log(req_data, 'req data');
     
 
     const res_dt = await getUploadedAcDetails(req_data.ardb_id, req_data.branch_code, req_data.id)

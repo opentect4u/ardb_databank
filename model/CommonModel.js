@@ -53,4 +53,9 @@ const PRINTER_OPT_MASTER = {
     '3': '3 Inch.'
 }
 
-module.exports = { PRINTER_TYPE_MASTER, PRINTER_OPT_MASTER, getBlockList, getServiceAreaList, getVillageList }
+const MAX_DATE_COL_ENTRY_FLAG = {
+    'D': 'Days',
+    'R': 'Date Range'
+}
+
+module.exports = { PRINTER_TYPE_MASTER, PRINTER_OPT_MASTER, getBlockList, getServiceAreaList, getVillageList, MAX_DATE_COL_ENTRY_FLAG }

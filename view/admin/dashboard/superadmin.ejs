@@ -1,0 +1,64 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <h3><%=title %></h3>
+      <div class="card col-11 mt-5">
+        <div class="card-body">
+          <div class="titleSec">
+            <h2>Summary of Active & Inactive Supervisor Details</h2>
+          </div>
+          <div class="row">
+            <div class="form-group col-6">
+              <label for="ardb_id"><b>ARDB Name:</b></label>
+              <select name="ardb_id"
+              class="form-control"
+              id="ardb_id"
+              required>
+               <option value="">Select ARDB Name</option>
+                            <% ardb.msg.forEach(function(item2,index) { %>
+                                <option value="<%=item2.ardb_id%>">
+                                    <%=item2.ardb_name%>
+                                </option>
+                                <% }); %>
+              </select>
+            </div>
+             
+            <div class="form-group col-4" style="margin-top: 29px;">
+              <button class="btn btn-outline-success" type="button" id="submitBtn">Submit</button>
+            </div>
+            </div>
+
+        <div class="row mt-2">
+            <div class="form-group col-12">
+              <label for="active_user" id="inputField"><b>Active User:</b>&nbsp;&nbsp;<b><span class="badge badge-success" id="act_dt" style="font-size: 15px;">0</span></b></label>
+             
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+              <label for="inactive_user" id="input"><b>Inactive User:</b>&nbsp;&nbsp;<b><span class="badge badge-danger" id="inact_dt" style="font-size: 15px;">0</span></b></label>
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    $('#submitBtn').click(function () {
+      var ardb_id = $('#ardb_id').val();
+      console.log({ ardb_id: ardb_id });
+      $.ajax({
+        type: "POST",
+        url: "/admin/dashboard/total_user",
+        data: { ardb_id: ardb_id},
+        success: function(response) {
+          console.log(response);
+          $('#act_dt').text(response.msg.act_dt)
+          $('#inact_dt').text(response.msg.deact_dt)
+        },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  });
+  </script>

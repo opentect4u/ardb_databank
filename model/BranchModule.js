@@ -14,4 +14,20 @@ const getBranchList = (ardb_id, user_type, id = 0) => {
     })
 }
 
-module.exports = { getBranchList };
+const get_branch_name = (ardb_id) =>{
+   return new Promise(async (resolve, reject) => {
+    try{
+      let select = 'a.*',
+      table_name = 'md_branch a',
+      whr = `a.ardb_id='${ardb_id}'`;
+       const res_dt = await F_Select(0, select, table_name, whr, null, 1)
+            resolve(res_dt);
+            // console.log(res_dt,'ki');
+            
+    }catch (err) {
+     resolve({ suc: 0, msg: err });
+    }
+})
+}
+	 
+module.exports = { getBranchList, get_branch_name };

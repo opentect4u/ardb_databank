@@ -1,3 +1,4 @@
+const { getArdbDetails } = require('../../model/ArdbModule');
 const { F_Select } = require('../../model/OrcModel'),
 dateFormat = require('dateformat'),
 Joi = require('joi');
@@ -17,7 +18,7 @@ reportRouter.all('/day_scroll_report', async (req, res) => {
         var whrDAta = `ardb_id='${user_data.ardb_id}' AND active_flag='Y'`,
             selectData = "branch_code,branch_name,branch_id ";
         let dbuser_data = await F_Select(0, selectData, "md_branch", whrDAta, null, 1);
-        console.log(dbuser_data)
+        // console.log(dbuser_data)
         let resData = {suc: 0, msg: []}
 
         if (req.method == 'POST') {
@@ -28,12 +29,16 @@ reportRouter.all('/day_scroll_report', async (req, res) => {
         }
 
         const datetimee = dateFormat(new Date(), "yyyy-mm-dd")
+
+        const ardbList = await getArdbDetails(user_data.user_type == 'A' ? 0 : user_data.ardb_id);
         var viewData = {
             selected,
             title: "Day Scroll Report",
             resDataBranch: dbuser_data.msg,
             nowdate: datetimee,
-            repo_dt: resData ? resData.msg : [],
+            // repo_dt: resData ? resData.msg : [],
+            repo_dt: resData && resData.suc > 0 && Array.isArray(resData.msg) ? resData.msg : [],
+            ardb: user_data.user_type == 'A' ? ardbList : '',
             dateFormat,
             request: req.method
         };
@@ -60,7 +65,7 @@ reportRouter.all('/account_type_wise_report', async (req, res) => {
         var whrDAta = `ardb_id='${user_data.ardb_id}' AND active_flag='Y'`,
             selectData = "branch_code,branch_name,branch_id ";
         let dbuser_data = await F_Select(0, selectData, "md_branch", whrDAta, null, 1);
-        console.log(dbuser_data)
+        // console.log(dbuser_data)
         let resData = { suc: 0, msg: [] }
 
         if (req.method == 'POST') {
@@ -71,12 +76,16 @@ reportRouter.all('/account_type_wise_report', async (req, res) => {
         }
 
         const datetimee = dateFormat(new Date(), "yyyy-mm-dd")
+        const ardbList = await getArdbDetails(user_data.user_type == 'A' ? 0 : user_data.ardb_id);
+
         var viewData = {
             selected,
             title: "Account Type Wise Report",
             resDataBranch: dbuser_data.msg,
             nowdate: datetimee,
-            repo_dt: resData.suc > 0 ? resData.msg : [],
+            // repo_dt: resData.suc > 0 ? resData.msg : [],
+            repo_dt: resData && resData.suc > 0 && Array.isArray(resData.msg) ? resData.msg : [],
+            ardb: user_data.user_type == 'A' ? ardbList : '',
             dateFormat,
             request: req.method
         };
@@ -113,12 +122,15 @@ reportRouter.all('/summary_report', async (req, res) => {
         }
 
         const datetimee = dateFormat(new Date(), "yyyy-mm-dd")
+        const ardbList = await getArdbDetails(user_data.user_type == 'A' ? 0 : user_data.ardb_id);
         var viewData = {
             selected,
             title: "Summary Report",
             resDataBranch: dbuser_data.msg,
             nowdate: datetimee,
-            repo_dt: resData.suc > 0 ? resData.msg : [],
+            // repo_dt: resData.suc > 0 ? resData.msg : [],
+            repo_dt: resData && resData.suc > 0 && Array.isArray(resData.msg) ? resData.msg : [],
+            ardb: user_data.user_type == 'A' ? ardbList : '',
             dateFormat,
             request: req.method
         };

@@ -3,11 +3,30 @@
         <div class="card col-12">
             <div class="card-body">
                 <div class="titleSec">
-                    <a href="/admin/branch/edit/0" class="btn btn-primary">Add</a>
+                    <a href="/admin/branch/edit/0" class="btn btn-info float-right">Add</a>
                     <h2>Branch</h2>
                 </div>
+
+                <% if(user.user_data.msg[0].user_type == 'A'){ %>
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label for="ardb_id"><b>ARDB Name:</b></label>
+                        <select name="ardb_id" class="form-control" id="ardb_id" required>
+                            <option value="">Select ARDB Name</option>
+                            <% ardb.msg.forEach(function(item2,index) {
+                                let _selected = ''
+                                if(selected.ardb_id == item2.ardb_id) _selected = 'selected' %>
+                                <option value="<%=item2.ardb_id%>" <%= _selected %>>
+                                    <%=item2.ardb_name%>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+                </div>
+               <% } %>
+
                 <!-- <input type="file" name="myFile" class="" id="pctxFile"> -->
-                <table class="table">
+                <table class="table table_bank" id="branchTable" style="width:100%">
                     <thead>
                         <tr>
                             <th>Sl. No.</th>
@@ -17,26 +36,110 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% data.msg.forEach(function(item, index) { %>
-                            <tr>
-                                <td>
-                                    <%= (index + 1) %>
-                                </td>
-                                <td>
-                                    <%= item.branch_name %>
-                                </td>
-                                <td>
-                                    <%= item.branch_code %>
-                                </td>
-                                <td>
-                                    <a href="/admin/branch/edit/<%= item.branch_id %>" class="btn btn-info">Edit</a>
-                                </td>
-                            </tr>
-                            <% }); %>
-
+                    <tr>
+                        <td colspan="4" class="text-center text-danger">
+                            No Data Found
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    const userType = "<%= user.user_data.msg[0].user_type %>";
+const loginArdb = "<%= user.user_data.msg[0].ardb_id %>";
+// ARDB change → load branches
+$('#ardb_id').change(function(){
+
+    let ardb_id = $(this).val();
+
+    if(!ardb_id){
+        $("#branchTable tbody").html(`
+          <tr>
+            <td colspan="4"
+                class="text-center text-danger">
+                Select ARDB
+            </td>
+          </tr>`);
+        return;
+    }
+
+    // getBranchData(ardb_id)
+        getBranchData(ardb_id);
+    
+});
+
+$(document).ready(function(){
+
+    // If not Super Admin → auto load
+    if(userType !== 'A'){
+        getBranchData(loginArdb);
+    }
+
+});
+
+
+
+function getBranchData(ardb_id){
+
+  let tbody = $("#branchTable tbody");
+
+  $.ajax({
+      type: "GET",
+      url: "/admin/branch/get_brn_list_ajax",
+      data: { ardb_id },
+
+      success: function(res){
+
+          tbody.empty();
+
+        //   if(res.msg.length > 0){
+        if(res.msg && Array.isArray(res.msg) && res.msg.length > 0){
+
+              res.msg.forEach((item,index)=>{
+
+                  let row = `
+                    <tr>
+                      <td>${index+1}</td>
+                      <td>${item.branch_name}</td>
+                      <td>${item.branch_code}</td>
+                      <td>
+                        <a href="/admin/branch/edit/${item.branch_id}"
+                           class="btn btn-info">
+                           Edit
+                        </a>
+                      </td>
+                    </tr>`;
+
+                  tbody.append(row);
+              });
+
+          } else {
+
+              tbody.html(`
+                <tr>
+                  <td colspan="4"
+                      class="text-center text-danger">
+                      No Data Found
+                  </td>
+                </tr>`);
+          }
+      },
+
+      error:function(){
+          tbody.html(`
+            <tr>
+              <td colspan="4"
+                  class="text-danger text-center">
+                  Error Loading Data
+              </td>
+            </tr>`);
+      }
+  });
+}
+
+</script>
+

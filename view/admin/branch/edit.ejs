@@ -4,49 +4,62 @@
             <div class="card-body">
                 <div class="titleSec">
                     <!-- <button type="button" class="btn btn-primary" id="myBtn">Add</button> -->
-                    <h2>Edit Branch Details</h2>
+                    <h2><i class="fa fa-arrow-circle-left" aria-hidden="true" id="back" style="cursor: pointer;">&nbsp;<%= title %></i></h2>
                 </div>
                 <form action="/admin/branch/edit" method="post" id="myForm">
                     <input type="hidden" name="branch_id" value="<%= data.length > 0 ? data[0].branch_id : 0 %>">
                     <input type="hidden" name="user_id" value="<%= data.length > 0 ? data[0].user_table_id : '' %>">
                     <div class="row">
-                        <div class="form-group col-6">
-                            <label for="branch_c">Branch Code:</label>
-                            <input type="text" id="branch_c" name="branch_c" class="form-control"
+                        <% if(user.user_data.msg[0].user_type == 'A'){ %>
+                        <div class="form-group col-4">
+                             <label for="ardb_id"><b>ARDB Name:<% if(data.length == 0 || data.length == undefined || data.length == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></b></label>
+                        <select name="ardb_id" class="form-control" id="ardb_id" required <%= data.length > 0 ? 'disabled' : '' %>>
+                            <option value="">Select ARDB Name</option>
+                            <% ardb.msg.forEach(function(item2,index) { %>
+                                <option value="<%=item2.ardb_id%>" <%= data.length > 0 && data[0].ardb_id == item2.ardb_id ? 'selected' : '' %>>
+                                    <%=item2.ardb_name%>
+                                </option>
+                                <% }); %>
+                        </select>
+                        </div>
+                        <% } %>
+                        <div class="form-group col-4">
+                            <label for="branch_c">Branch Code:<% if(data.length == 0 || data.length == undefined || data.length == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="text" id="branch_c" name="branch_c" class="form-control" placeholder="Enter branch code here..."
                                 value="<%= data.length > 0 ? data[0].branch_code : '' %>" required <%= data.length> 0 ? 'readonly' : '' %> />
                         </div>
 
-                        <div class="form-group col-6">
-                            <label for="branchname">Branch Name:</label>
+                        <div class="form-group col-4">
+                            <label for="branchname">Branch Name:<% if(data.length == 0 || data.length == undefined || data.length == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
                             <input type="text" name="branchname" id="branchname" class="form-control"
-                                placeholder="Enter Branch Name" value="<%= data.length > 0 ? data[0].branch_name : '' %>" required />
+                                placeholder="Enter Branch Name here..." value="<%= data.length > 0 ? data[0].branch_name : '' %>" required />
                         </div>
 
                         <div class="form-group col-4">
-                            <label for="contactperson">Contact Person:</label>
+                            <label for="contactperson">Contact Person:<% if(data.length == 0 || data.length == undefined || data.length == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
                             <input type="text" name="contactperson" id="contactperson" class="form-control"
-                                placeholder="Enter Name" value="<%= data.length > 0 ? data[0].contact_person : '' %>" required />
+                                placeholder="Enter contact person Name..." value="<%= data.length > 0 ? data[0].contact_person : '' %>" required />
                         </div>
 
                         <div class="form-group col-4">
-                            <label for="email">Email:</label>
-                            <input type="email" name="email" class="form-control" id="email"
+                            <label for="email">Email:<% if(data.length == 0 || data.length == undefined || data.length == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="email" name="email" class="form-control" id="email" placeholder="Enter email here..."
                                 value="<%= data.length > 0 ? data[0].email_id : '' %>" required <%= data.length> 0 ? 'readonly' : '' %> />
                         </div>
                         <div class="form-group col-4">
-                            <label for="mobile">Mobile No.:</label>
-                            <input type="text" name="mobile" class="form-control" id="mobile"
+                            <label for="mobile">Mobile No.:<% if(data.length == 0 || data.length == undefined || data.length == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="text" name="mobile" class="form-control" maxlength="10" id="mobile" placeholder="Enter mobile no here..."
                                 value="<%= data.length > 0 ? data[0].phone_no : '' %>" required />
                         </div>
 
                         <div class="form-group col-12">
-                            <label for="branch_address">Address :</label>
-                            <textarea name="branch_address" class="form-control"
+                            <label for="branch_address">Address :<% if(data.length == 0 || data.length == undefined || data.length == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <textarea name="branch_address" class="form-control" placeholder="Enter branch address here..."
                                 id="branch_address"><%= data.length > 0 ? data[0].branch_address : '' %></textarea>
                         </div>
 
-                        <div class="form-group col-12">
-                            <input type="submit" value="SUBMIT" class="btn btn-primary btn-block" />
+                        <div class="form-group col-3">
+                            <input type="submit" value="SUBMIT" class="btn btn-primary btn-block" style="margin-left: 25vw;"/>
                         </div>
                     </div>
                 </form>
@@ -59,6 +72,19 @@
 
 
 <script>
+//       $(document).ready(function () {
+//     $("#back").click(function () {
+//       window.location.href = "/admin/branch";
+//     });
+//   });
+
+ $(document).ready(function () {
+        $("#back").click(function () {
+            event.preventDefault();
+            history.back(1);
+        });
+    });
+
     $(document).ready(function () {
         $("#myForm").validate({
             rules: {

@@ -79,8 +79,11 @@
                             </thead>
                             <tbody>
                         
-                                <% var total_amount=0.0;
-                                repo_dt.forEach(function(item,index) {
+                                <% var total_amount=0.0; %>
+
+                                <% if(repo_dt && repo_dt.length > 0){ %>
+
+                                <% repo_dt.forEach(function(item,index) {
                                     total_amount+=item.deposit_amount %>
                                     <tr>
                                         <td>
@@ -106,7 +109,7 @@
                                         </td>
                         
                                     </tr>
-                                    <% }); %>
+                                    <% }) %>
                         
                                         <tr>
                                             <td></td>
@@ -120,6 +123,14 @@
                                             </td>
                         
                                         </tr>
+                                        <% } else { %>
+
+                                        <tr>
+                                            <td colspan="7" style="text-align:center;color:red;">
+                                                No Data Found
+                                            </td>
+                                        </tr>
+                                        <% } %>
                         
                             </tbody>
                         </table>

@@ -1,0 +1,292 @@
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="card col-12">
+      <div class="card-body">
+        <div class="titleSec">
+          <h2><i class="fa fa-arrow-circle-left" aria-hidden="true" id="back" style="cursor: pointer;">&nbsp;<%= title %></i></h2>
+        </div>
+        <form action="/admin/ardb/edit" method="post" id="myForm">
+
+          <div class="row">
+            <div class="form-group col-4">
+              <label for="ardb_id">ARDB ID:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <input type="text" id="ardb_id" name="ardb_id" class="form-control" placeholder="Write ardb id here..." value="<%= data.ardb_id || '' %>" <%= data.ardb_id> 0 ? 'readonly' : '' %>/>
+            </div>
+
+            <div class="form-group col-8">
+              <label for="ardb_name">ARDB Name:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <input type="text" id="ardb_name" name="ardb_name" class="form-control" value="<%= data.ardb_name || '' %>" placeholder="Write ardb name here..."/>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="contact_person">Contact Person:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <input type="text" name="contact_person" class="form-control" id="contact_person" value="<%= data.contact_person %>" placeholder="Write contact person name here..."/>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="mobile">Mobile No:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <input
+                type="text"
+                name="mobile"
+                class="form-control"
+                id="mobile"
+                maxlength="10"
+                value="<%= data.phone_no %>"
+                placeholder="Write mobile no here..."
+              />
+            </div>
+
+            <div class="form-group col-4">
+              <label for="email">Email:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <input
+                type="text"
+                name="email"
+                class="form-control"
+                id="email"
+                placeholder="Write email here..."
+                value="<%= data.email_id %>" <%= data.ardb_id > 0 ? 'readonly' : '' %>/>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="device_type">Device Type:</label>
+              <select name="device_type"
+              class="form-control"
+              id="device_type" style="background-color: antiquewhite;"
+              value=""
+              >
+                <!-- <option value="">Select Device Type</option> -->
+                <option value="M">Mobile</option>
+              </select>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="data_transfer_type">Data transfer types:</label>
+              <select name="data_transfer_type"
+                class="form-control"
+                id="data_transfer_type" style="background-color: antiquewhite;"
+                value=""
+                >
+                <!-- <option value="">Select Data transfer types</option> -->
+                <option value="P">Auto transfer data through procedure</option>
+              </select>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="max_day_entry_flag">Max Collection Day Entry Flag:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <select name="max_day_entry_flag"
+                class="form-control"
+                id="max_day_entry_flag" style="background-color: antiquewhite;"
+                required>
+                <option value="">Select max Collection day entry flag</option>
+                <% Object.keys(max_dt_col_entry_flag).forEach(dt => {
+                  var _selected = ''
+                   if(data.max_day_entry_flag)
+                  if(data.max_day_entry_flag == dt)
+                    _selected = 'selected' %>
+                  <option value="<%= dt %>" <%= _selected %>><%= max_dt_col_entry_flag[dt] %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="receipt_type">Receipt type:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <select  name="receipt_type"
+              class="form-control"
+              id="receipt_type" style="background-color: antiquewhite;"
+              value=""
+              >
+              <option value="">Select Receipt type</option>
+              <option value="S" <%= data.receipt_type == 'S' ? 'selected' : '' %>>SMS </option>
+              <option value="P" <%= data.receipt_type == 'P' ? 'selected' : '' %>>Print</option>
+              <option value="B" <%= data.receipt_type == 'B' ? 'selected' : '' %>>Both</option>
+            </select>
+            </div>
+
+
+            <div class="form-group col-4">
+              <label for="sucurity_amt_type">Security Amount type:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <select  name="sucurity_amt_type"
+              class="form-control"
+              id="sucurity_amt_type"
+              value=""
+              >
+              <option value="">Select Security Amount type</option>
+              <option value="A" <%= data.sec_amt_type == 'A' ? 'selected' : '' %>>Auto </option>
+              <option value="M" <%= data.sec_amt_type == 'M' ? 'selected' : '' %>>Manual</option>
+            </select>
+            </div>
+
+             <div class="form-group col-4">
+              <label for="max_user">Max User:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <input type="text" name="max_user" class="form-control" id="max_user" style="background-color: bisque;"
+                value="<%= data.max_user %>" placeholder="Write maximum users here..."/>
+            </div>
+
+            <!-- <% if(ardb_id == 0){ %>
+            <div class="form-group col-4">
+              <label for="pin">Password:<span style="color: rgb(182, 5, 5);">*</span></label>
+              <div class="input-group">
+              <input
+                type="password"
+                name="password"
+                class="form-control"
+                id="pin"
+                maxlength="4" placeholder="Write password here..."
+                required
+              />
+
+               <div class="input-group-append">
+                <span class="input-group-text" onclick="togglePassword('pin', this)" style="cursor:pointer;">
+                  <i class="fa fa-eye"></i>
+                </span>
+                </div>
+            </div>
+            </div>
+            <% } %>
+
+            <% if(ardb_id == 0){ %>
+            <div class="form-group col-4">
+              <label for="cid">Confirm Password:<span style="color: rgb(182, 5, 5);">*</span></label>
+               <div class="input-group">
+              <input
+                type="password"
+                name="confirmPassword"
+                class="form-control"
+                id="cid"
+                maxlength="4" placeholder="Write confirm password here..."
+                required
+              />
+              <div class="input-group-append">
+            <span class="input-group-text" onclick="togglePassword('cid', this)" style="cursor:pointer;">
+              <i class="fa fa-eye"></i>
+            </span>
+            </div>
+             </div>
+            </div>
+            <% } %>
+
+            <div class="form-group col-4">
+              <label for="start">ARDB start Date & Time:</label>
+              <input type="datetime-local" name="start" class="form-control" id="start" style="background-color: bisque;" value="" readonly />
+            </div> -->
+
+
+            <div class="form-group col-4 mt-3">
+              <label>Active flag:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+            
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="active_flag"
+                  class="form-check-input"
+                  id="active_option"
+                  value="Y" <%= data.active_flag == 'Y' ? 'Checked' : '' %>
+                />
+                <label class="form-check-label" for="active_option">Active</label>
+              </div>
+            
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="active_flag"
+                  class="form-check-input"
+                  id="inactive_option"
+                  value="N" <%= data.active_flag == 'N' ? 'Checked' : '' %>
+                />
+                <label class="form-check-label" for="inactive_option">Inactive</label>
+              </div>
+            </div>
+
+            <div class="form-group col-4 mt-3">
+              <label>After Maturity Collection:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+            
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="after_maturity_coll"
+                  class="form-check-input"
+                  id="maturity_active_option"
+                  value="Y" <%= data.after_maturity_coll == 'Y' ? 'Checked' : '' %>
+                />
+                <label class="form-check-label" for="maturity_active_option">Yes</label>
+              </div>
+            
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  name="after_maturity_coll"
+                  class="form-check-input"
+                  id="maturity_inactive_option"
+                  value="N" <%= data.after_maturity_coll == 'N' ? 'Checked' : '' %>
+                />
+                <label class="form-check-label" for="maturity_inactive_option">No</label>
+              </div>
+            </div>
+
+            <div class="form-group col-12 mt-3">
+              <label for="ardb_address">ARDB Address:<% if(data.ardb_id == 0 || data.ardb_id == undefined || data.ardb_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+              <textarea  name="ardb_address"
+              id="ardb_address"
+              class="form-control"
+              placeholder="Enter ardb address here..."
+              cols="30" rows="3"><%= data.ardb_address %></textarea>
+            </div>
+
+            <div class="form-group col-3 center">
+              <input
+                type="submit" value="SUBMIT" class="btn btn-primary btn-block" style="margin-left: 25vw;"/>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+   let now = new Date();
+
+   // Format to YYYY-MM-DDTHH:MM
+   let formatted =
+       now.getFullYear() + "-" +
+       String(now.getMonth()+1).padStart(2,'0') + "-" +
+       String(now.getDate()).padStart(2,'0') + "T" +
+       String(now.getHours()).padStart(2,'0') + ":" +
+       String(now.getMinutes()).padStart(2,'0');
+
+   document.getElementById("start").value = formatted;
+
+});
+
+function togglePassword(fieldId, el){
+
+    let input = document.getElementById(fieldId);
+    let icon = el.querySelector("i");
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+
+  // $(document).ready(function () {
+  //   $("#back").click(function () {
+  //     window.location.href = "/admin/ardb";
+  //   });
+  // });
+
+   $(document).ready(function () {
+        $("#back").click(function () {
+            event.preventDefault();
+            history.back(1);
+        });
+    });
+</script>

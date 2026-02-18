@@ -4,12 +4,21 @@
             style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px;">Main Menu</small>
     </div>
     <ul class="nav flex-column">
+        <% if(user.user_data.msg[0].user_type == 'A'){ %>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" href="/admin/dashboard/superadmin">
+                <i class="mdi mdi-view-dashboard-outline mr-3"></i>
+                <span class="menu-title">Dashboard</span>
+            </a>
+        </li>
+        <% } else { %>
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center" href="/admin/dashboard">
                 <i class="mdi mdi-view-dashboard-outline mr-3"></i>
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
+        <% } %>
         <!-- <li class="nav-item">
             <a class="nav-link d-flex align-items-center" href="/admin/upload_logo">
                 <i class="mdi mdi-image-plus mr-3"></i>
@@ -22,7 +31,17 @@
             <small class="text-uppercase font-weight-bold"
                 style="color: var(--text-muted); font-size: 0.7rem; letter-spacing: 1px;">Management</small>
         </div>
-        <% if(['S', 'B'].includes(user.user_data.msg[0].user_type)){ %>
+
+        <% if(['A'].includes(user.user_data.msg[0].user_type)){ %>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="/admin/ardb">
+                    <i class="mdi mdi-office-building mr-3"></i>
+                    <span class="menu-title">ARDB</span>
+                </a>
+            </li>
+        <% } %>
+
+        <% if(['A', 'B'].includes(user.user_data.msg[0].user_type)){ %>
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center" href="/admin/branch">
                     <i class="mdi mdi-office-building-outline mr-3"></i>
@@ -37,6 +56,22 @@
                 <span class="menu-title">Supervisor</span>
             </a>
         </li>
+
+        <% if(['A'].includes(user.user_data.msg[0].user_type)){ %>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="/admin/sms">
+                    <i class="mdi mdi-message-alert-outline mr-3"></i>
+                    <span class="menu-title">SMS</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="/admin/about">
+                    <i class="mdi mdi-information-outline mr-3"></i>
+                    <span class="menu-title">About</span>
+                </a>
+            </li>
+        <% } %>
 
         <% if(user.user_data.msg[0].user_type == 'R'){ %>
             <div class="sidebar-divider mx-4 my-3" style="border-top: 1px solid var(--border-color);"></div>

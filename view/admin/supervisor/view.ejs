@@ -3,7 +3,8 @@
         <div class="card col-12">
             <div class="card-body">
                 <div class="titleSec">
-                    <button type="button" class="btn btn-info float-right" onclick="editAgent('<%= selected.ardb_id %>', '<%= selected.branch_code %>', 'Y', 0)" id="myBtn">Add</button>
+                    <!-- <button type="button" class="btn btn-info float-right" onclick="editAgent('<%= selected.ardb_id %>', '<%= selected.branch_code %>', 'Y', 0)" id="myBtn">Add</button> -->
+                      <button type="button" class="btn btn-info float-right" onclick="editAgent()" id="myBtn">Add</button>
                     <h2>Active Agent</h2>
                 </div>
                 <div class="row">
@@ -28,7 +29,7 @@
                             <% if(resDataBranch.length > 0){
                                 resDataBranch.forEach(dt => {
                                     let _selected = ''
-                                    if(selected.branch_code == dt.branch_code) _selected = 'selected' %>
+                                    if(selected.branch_code == dt.branch_code && selected.ardb_id == dt.ardb_id) _selected = 'selected' %>
                                     <option value="<%= dt.branch_code %>" <%= _selected %>><%= dt.branch_name %></option>
                                 <% })
                             } %>
@@ -99,12 +100,14 @@
 <script>
     $('#ardb_id').on('change', function(){
         let ardb_id = $(this).val()
+        
         $.ajax({
             type: "GET",
             url: "/admin/branch/get_brn_list_ajax",
+            // url: "/admin/branch/get_branch_name",
             data: { ardb_id: ardb_id },
             success: function (response) {
-                // console.log(response.SUCCESS.branchData.msg)
+               
                 $('#branch_code').empty();
                 $('#branch_code').append(`<option value="">Select Branch Name</option>`)
 
@@ -144,4 +147,10 @@
         let data = { ardb_id, branch_code, flag, id }
         routToNextPage('/admin/supervisor/edit', JSON.stringify(data), true)
     }
+
+    window.onload = function () {
+   if (performance.navigation.type == 1) {
+       window.location.href = "/admin/supervisor"
+   }
+}
 </script>

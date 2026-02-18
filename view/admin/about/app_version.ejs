@@ -1,0 +1,27 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="card col-12">
+        <div class="card-body">
+          <div class="titleSec">
+            <h2>App Version Details</h2>
+          </div>
+          <div class="row">
+            <div class="form-group col-6">
+              <label for="app"><b>App Version:</b></label>
+             <input type="text" id="app" name="app"  class="form-control"
+             value="<%= data.msg[0].app_version%>" readonly>
+            </div>
+             
+
+                <div class="col-md-12">
+                    <div class="form-group"> 
+                   <a class="btn btn-success" href="<%= data.msg[0].app_download_link%>" target="_blank">Download</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+
+ 

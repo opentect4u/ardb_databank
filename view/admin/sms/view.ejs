@@ -1,0 +1,66 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="card col-12">
+        <div class="card-body">
+          <div class="titleSec">
+            <button type="button" class="btn btn-info float-right" id="myBtn" onclick="addSms()">Add</button>
+            <h2><%= title %></h2>
+          </div>
+          <div class="row">
+            <div class="form-group col-5">
+              <label for="ardb_id"><b>ARDB Name:</b></label>
+              <select name="ardb_id" class="form-control" id="ardb_id" required>
+                <option value="">Select ARDB Name</option>
+                <% ardb.msg.forEach(function(item2,index) {
+                                let _selected = ''
+                                if(selected.ardb_id == item2.ardb_id) _selected = 'selected' %>
+                                <option value="<%=item2.ardb_id%>" <%= _selected %>>
+                                    <%=item2.ardb_name%>
+                                </option>
+                                <% }); %>
+              </select>
+            </div>
+             
+            <div class="form-group col-4" style="margin-top: 29px;">
+              <button class="btn btn-outline-success" type="button" id="submitBtn">Submit</button>
+            </div>
+
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label for="sms_temp"><b>SMS Template</b></label>
+                    <textarea class="form-control" id="sms_temp" rows="5" placeholder="View template...." readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+     function addSms(){
+        // let data = { ardb_id, flag }
+        routToNextPage('/admin/sms/add')
+    }
+
+    $('#submitBtn').click(function() {
+      var ardb_id = $('#ardb_id').val();
+
+      $.ajax({
+        type: "GET",
+        url: "/admin/sms/get_sms_list_ajax",
+        data: { ardb_id: ardb_id},
+        success: function(response) {
+          if(response.suc > 0 && response.msg.length > 0){
+            $('#sms_temp').text(response.msg[0].template)
+          }else{
+            $('#sms_temp').text('')
+          }        
+        },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+    });
+  </script>

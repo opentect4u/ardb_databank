@@ -5,19 +5,21 @@
                 <div class="titleSec">
                     <!-- <button type="button" class="btn btn-primary" id="myBtn">Add</button> -->
                     <h2><i class="fa fa-arrow-circle-left" aria-hidden="true" id="back"
-                            style="cursor: pointer;">&nbsp;Edit Agent Details</i></h2>
+                            style="cursor: pointer;">&nbsp;<%= title %></i></h2>
                 </div>
                 <form action="/admin/supervisor/edit" id="myForm" method="post">
-                    <input type="hidden" name="ardb_id" value="<%= req_data.ardb_id %>">
+
+                    <% if(agent_id > 0){ %>
                     <div class="titleSec">
                         <h5>Branch : <%= data.branch_name %>
                         </h5>
                     </div>
+                    <% } %>
                     <div class="row">
 
                         <div class="form-group col-6">
-                            <label for="ardb_id"><b>ARDB Name:</b></label>
-                            <select name="ardb_id" class="form-control" id="ardb_id" disabled>
+                            <label for="ardb_id"><b>ARDB Name:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></b></label>
+                            <select name="ardb_id" class="form-control" id="ardb_id" <%= agent_id> 0 ? 'disabled' : '' %>/>
                                 <option value="">Select ARDB Name</option>
                                 <% if(ardbList.length > 0){
                                     ardbList.forEach(dt => {
@@ -28,55 +30,58 @@
                                     <% })
                                 } %>
                             </select>
+                            <% if(agent_id> 0){ %>
+                                <input type="hidden" name="ardb_id" value="<%= req_data.ardb_id %>">
+                            <% } %>
                         </div>
                         <div class="form-group col-6">
-                            <label for="branch_c">Branch Code:</label>
-                            <input type="text" id="branch_c" name="branch_c" class="form-control"
+                            <label for="branch_c">Branch Code:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="text" id="branch_c" name="branch_c" class="form-control" placeholder="Write branch code here..."
                                 value="<%= data.branch_code %>" <%= agent_id > 0 ? 'readonly' : '' %> />
                         </div>
                         <div class="form-group col-6">
-                            <label for="supervisor_code">Supervisor Code:</label>
-                            <input type="text" id="supervisor_code" name="user_id" class="form-control"
+                            <label for="supervisor_code">Supervisor Code:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="text" id="supervisor_code" name="user_id" class="form-control" placeholder="Write supervisor code here..."
                                 value="<%= data.supervisor_code %>" <%= agent_id> 0 ? 'readonly' : '' %> />
                         </div>
 
                         <div class="form-group col-6">
-                            <label for="supervisor_name">Name:</label>
-                            <input id="supervisor_name" type="text" name="supervisor_name" class="form-control" placeholder="Enter Name"
+                            <label for="supervisor_name">Supervisor Name:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input id="supervisor_name" type="text" name="supervisor_name" class="form-control" placeholder="Write supervisor Name here..."
                                 value="<%= data.supervisor_name %>" />
                         </div>
 
                         <div class="form-group col-6">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" class="form-control"
+                            <label for="email">Email:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Write email here..."
                                 value="<%= data.email_id %>" <%= agent_id> 0 ? 'readonly' : '' %> />
                         </div>
 
                         <div class="form-group col-6">
-                            <label for="mobile">Mobile No.:</label>
-                            <input type="text" id="mobile" name="mobile" class="form-control"
+                            <label for="mobile">Mobile No.:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="text" id="mobile" maxlength="10" name="mobile" class="form-control" placeholder="Write mobile no here..."
                                 value="<%= data.phone_no %>" />
                         </div>
 
                         <div class="form-group col-6">
-                            <label for="max_amt">MAX Allowable Collection Amount :</label>
-                            <input id="max_amt" type="number" name="max_amt" class="form-control"
+                            <label for="max_amt">MAX Allowable Collection Amount :<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input id="max_amt" type="number" name="max_amt" class="form-control" placeholder="Write collection amount here..."
                                 value="<%= data.max_amt %>" />
                         </div>
                         <div class="form-group col-6">
-                            <label for="allow_collection_days">Max allowable no.of days :</label>
-                            <input type="number" name="allow_collection_days" class="form-control"
+                            <label for="allow_collection_days">Max allowable no.of days :<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input type="number" name="allow_collection_days" class="form-control" placeholder="Write no. of days here..."
                                 id="allow_collection_days" value="<%= data.allow_collection_days %>" />
                         </div>
 
                         <div class="form-group col-6">
-                            <label for="deviceId">Device Id. :</label>
-                            <input id="deviceId" type="text" name="device_id" class="form-control"
+                            <label for="deviceId">Device Id. :<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
+                            <input id="deviceId" type="text" name="device_id" class="form-control" placeholder="Write device id here..."
                                 value="<%= data.device_id %>" />
                         </div>
-                        <div class="form-group col-6">
-                            <label for="printer_type">Printer Type :</label>
-                            <select name="printer_type" id="printer_type" class="form-control" required>
+                        <!-- <div class="form-group col-6">
+                            <label for="printer_type">Printer Type :<span style="color: rgb(182, 5, 5);">*</span></label>
+                            <select name="printer_type" id="printer_type" class="form-control" placeholder="Write printer type here..." required>
                                 <option value="">Select Printer Type</option>
                                 <% if(Object.keys(printer_type).length> 0){
                                     Object.keys(printer_type).forEach(dt => {
@@ -86,9 +91,9 @@
                                     </option>
                                     <% }) } %>
                             </select>
-                        </div>
+                        </div> -->
                         <div class="form-group col-6">
-                            <label for="print_opt">Printer Type :</label>
+                            <label for="print_opt">Printer Receipt Size :<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
                             <select name="print_opt" id="print_opt" class="form-control" required>
                                 <option value="">Select Printer Type</option>
                                 <% if(Object.keys(print_opt).length> 0){
@@ -101,18 +106,20 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-6 mt-4">
+                        <div class="form-group col-4 mt-4">
                             <label for="success"></label>
                             <input type="checkbox" value="Y" id="myCheckbox" data-toggle="toggle" data-onstyle="success"
                                 data-offstyle="danger" data-on="Active" data-off="Deactive" name="agent_active"
                                 <%=(data.active_flag=='Y' )?'checked':''%>
                             >
-
                         </div>
+
+                        <input type="hidden" name="printer_type" value="ESCPOS"/>
+
 
                         <input type="hidden" name="agent_id" value="<%= agent_id %>">
 
-                        <div class="form-group col-6">
+                        <div class="form-group col-6 mt-3">
                             <div class="col-6">
                                 <input type="submit" value="SUBMIT" class="btn btn-primary btn-block" />
                             </div>

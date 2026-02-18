@@ -145,6 +145,7 @@
                     let _selected = '';
                     if (selected.branch_code == resData.branch_code) _selected = 'selected'
                     $('#branch_code').append('<option value="' + resData.branch_code + '"'+ _selected +'>' + resData.branch_name + '</option>');
+                    if(selected.branch_code > 0) $('#branch_code').change();
                 });
             }
         });

@@ -42,7 +42,7 @@ app.use(
 
 app.use(flash());
 app.use((req, res, next) => {
-    console.log(req.path, 'pppppppppppppppppppppppppppppppppppppppp');
+    // console.log(req.path, 'pppppppppppppppppppppppppppppppppppppppp');
 
     res.locals.currentUser = req.user;
     res.locals.user = req.session.user ? req.session.user : null

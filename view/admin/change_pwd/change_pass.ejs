@@ -1,0 +1,136 @@
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="card col-12">
+            <div class="card-body">
+                <div class="titleSec">
+                    <h2><i class="fa fa-key">&nbsp;Change Password</i></h2>
+                </div>
+                <form action="/admin/password/password" method="post" id="myForm">
+                    
+                    <div class="row">
+                        
+                       <div class="form-group col-4">
+                        <label for="old_pwd">Old Password:</label>
+                        <div class="input-group">
+                            <input type="password" id="old_pwd" name="old_pwd" class="form-control" placeholder="Enter old password here...">
+
+                            <div class="input-group-append">
+                                <span class="input-group-text"
+                                      onclick="togglePassword('old_pwd', this)"
+                                      style="cursor:pointer;">
+                                    <i class="fa fa-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+                        </div>
+
+
+                        <div class="form-group col-4">
+                        <label for="new_pwd">New Password:</label>
+
+                        <div class="input-group">
+                            <input type="password"
+                                   id="new_pwd"
+                                   name="new_pwd"
+                                   class="form-control"
+                                   placeholder="Enter new password here..."
+                                   onkeyup="validatePassword()">
+                        
+                                    <div class="input-group-append">
+                                <span class="input-group-text"
+                                      onclick="togglePassword('new_pwd', this)"
+                                      style="cursor:pointer;">
+                                    <i class="fa fa-eye"></i>
+                                </span>
+                                    </div>
+                                </div>
+                                    </div>
+
+
+                       <div class="form-group col-4">
+                        <label for="confirm_pwd">Confirm Password:</label>
+
+                        <div class="input-group">
+                            <input type="password"
+                                   id="confirm_pwd"
+                                   name="confirm_pwd"
+                                   class="form-control"
+                                   placeholder="Enter confirm password here..."
+                                   onkeyup="validatePassword()">
+                        
+                                <div class="input-group-append">
+                                <span class="input-group-text"
+                                      onclick="togglePassword('confirm_pwd', this)"
+                                      style="cursor:pointer;">
+                                    <i class="fa fa-eye"></i>
+                                </span>
+                                    </div>
+                                    </div>
+                                     <small id="pwdError" class="text-danger d-none">
+                                        Passwords do not match
+                                    </small>
+                                </div>
+
+                        
+                        <div class="form-group col-12 text-center mt-3">
+                            <input type="submit"  id="submitBtn" value="SUBMIT" class="btn btn-primary px-5" disabled />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword(fieldId, el){
+
+    let input = document.getElementById(fieldId);
+    let icon = el.querySelector("i");
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } 
+    else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+
+function validatePassword() {
+
+    const newPwd = document.getElementById("new_pwd").value;
+    const confirmPwd = document.getElementById("confirm_pwd").value;
+    const errorText = document.getElementById("pwdError");
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (newPwd === "" || confirmPwd === "") {
+        errorText.classList.add("d-none");
+        submitBtn.disabled = true;
+        return;
+    }
+
+    if (newPwd !== confirmPwd) {
+        errorText.classList.remove("d-none");
+        submitBtn.disabled = true;
+    } 
+    else {
+        errorText.classList.add("d-none");
+        submitBtn.disabled = false;
+    }
+}
+</script>
+
+<style>
+    .input-group-text {
+    background: #f8f9fa;
+    border-left: 0;
+}
+
+.input-group .form-control:focus {
+    box-shadow: none;
+}
+</style>

@@ -10,5 +10,10 @@ indexAdminRouter.use('/pcrx', authenticateToken, setUserMiddleware, require('./d
 indexAdminRouter.use('/common', authenticateToken, setUserMiddleware, require('./commonRouter').commonRouter)
 indexAdminRouter.use('/show_upload_account', authenticateToken, setUserMiddleware, require('./viewAcRouter').viewAcRouter)
 indexAdminRouter.use('/report', authenticateToken, setUserMiddleware, require('./reportRouter').reportRouter)
+indexAdminRouter.use('/ardb', authenticateToken, setUserMiddleware, require('./ardbRouter').ardbRouter)
+indexAdminRouter.use('/sms', authenticateToken, setUserMiddleware, require('./smsRouter').smsRouter)
+indexAdminRouter.use('/about', authenticateToken, setUserMiddleware, require('./app_versionRouter').app_versionRouter)
+indexAdminRouter.use('/password', authenticateToken, setUserMiddleware, require('./change_pwdRouter').change_pwdRouter)
+indexAdminRouter.use('/profile', authenticateToken, setUserMiddleware, require('./profileRouter').profileRouter)
 
 module.exports = {indexAdminRouter};

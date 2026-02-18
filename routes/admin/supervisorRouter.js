@@ -19,7 +19,7 @@ supervisorRouter.get('/', async (req, res) => {
     let req_data = req.query.enc_dt ? Buffer.from(req.query.enc_dt, 'base64').toString() : null;
     req_data = req_data ? JSON.parse(req_data) : null;
 
-    console.log(req_data);
+    // console.log(req_data);
     
 
     const selected = {
@@ -28,7 +28,9 @@ supervisorRouter.get('/', async (req, res) => {
         flag: req_data ? req_data.flag : 'Y'
     }
     
-    const ardbList = await getArdbDetails(selected.ardb_id);
+    // const ardbList = await getArdbDetails(selected.ardb_id);
+    const ardbList = await getArdbDetails(user_data.user_type == 'A' ? 0 : user_data.ardb_id);
+
     const resDataBranch = await getBranchList(selected.ardb_id, user_data.user_type);
     const resData = await getSupervisorDetails(selected.ardb_id, selected.branch_code, selected.flag);
     // console.log(resData);
@@ -40,6 +42,8 @@ supervisorRouter.get('/', async (req, res) => {
         ardb: ardbList,
         selected: selected,
     };
+    // console.log(selected,'selected');
+    
     res.render('admin/supervisor/view', viewData)
 })
 
@@ -49,12 +53,17 @@ supervisorRouter.get('/edit', async (req, res) => {
     
     let userData = req.user.user_data.msg[0];
 
-    var ardbList = await getArdbDetails(userData.user_type != 'S' ? req_data.ardb_id : 0);
+    var ardbList = await getArdbDetails(userData.user_type != 'A' ? req_data.ardb_id : 0);
 
     const resData = req_data.id > 0 ? await getSupervisorDetails(req_data.ardb_id, req_data.branch_code, 'Y', req_data.id) : { suc: 1, msg: [] };
     delete resData.sql;
+
+    let pageTitle = req_data.id > 0
+        ? "Edit Agent Details"
+        : "Add Agent Details";
+
     var viewData = {
-        title: "Agent",
+        title: pageTitle,
         ardbList: ardbList.suc ? ardbList.msg : [],
         data: resData.suc > 0 && resData.msg.length > 0 ? resData.msg[0] : {},
         agent_id: req_data.id,
@@ -69,7 +78,7 @@ supervisorRouter.get('/edit', async (req, res) => {
 supervisorRouter.post('/edit', async (req, res) => {
     try {
         const schema = Joi.object({
-            ardb_id: Joi.required(),
+            ardb_id: Joi.string(),
             branch_c: Joi.required(),
             user_id: Joi.required(),
             supervisor_name: Joi.string().required(),
@@ -80,8 +89,8 @@ supervisorRouter.post('/edit', async (req, res) => {
             device_id: Joi.required(),
             agent_active: Joi.string().default('Y'),
             agent_id: Joi.required(),
-            printer_type: Joi.string().required(),
-            print_opt: Joi.string().required(),
+            printer_type: Joi.string(),
+            print_opt: Joi.string(),
         });
         const { error, value } = schema.validate(req.body, { abortEarly: false });
         // console.log(value);
@@ -102,7 +111,7 @@ supervisorRouter.post('/edit', async (req, res) => {
         supFldIndex = value.agent_id > 0 ? null : `(:0, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, TO_DATE(:12, 'YYYY-MM-DD HH24:MI:SS'), 'N', :13)`,
         supValues = value.agent_id > 0 ? [
             value.supervisor_name, value.mobile, value.email, value.max_amt, value.allow_collection_days, value.account_no ? value.account_no : null, value.printer_type, value.print_opt, user_data.id, dateFormat(currDt, "yyyy-mm-dd HH:MM:ss"), 'N', value.agent_active, value.agent_id
-        ] : [user_data.ardb_id, value.branch_c, value.user_id, value.supervisor_name, value.mobile, value.email, value.max_amt, value.allow_collection_days, value.account_no ? value.account_no : null, value.printer_type, value.print_opt, user_data.id, dateFormat(currDt, "yyyy-mm-dd HH:MM:ss"), value.agent_active],
+        ] : [value.ardb_id, value.branch_c, value.user_id, value.supervisor_name, value.mobile, value.email, value.max_amt, value.allow_collection_days, value.account_no ? value.account_no : null, value.printer_type, value.print_opt, user_data.id, dateFormat(currDt, "yyyy-mm-dd HH:MM:ss"), value.agent_active],
         supWhere = `supervisor_id=:12`,
         supFlag = value.agent_id > 0 ? 1 : 0;
 
@@ -114,7 +123,7 @@ supervisorRouter.post('/edit', async (req, res) => {
                 let enc_pss = bcrypt.hashSync(pss, 10)
                 let userFields = `ardb_id, branch_code, user_type, password, device_id, user_id, active_flag, created_by, created_at, delete_flag`,
                     userFldIndex = `(:0, :1, 'O', :2, :3, :4, 'Y', :5, TO_DATE(:6, 'YYYY-MM-DD HH24:MI:SS'), 'N')`,
-                    userValues = [user_data.ardb_id, value.branch_c, enc_pss, value.device_id, value.user_id, user_data.id, dateFormat(currDt, "yyyy-mm-dd HH:MM:ss")];
+                    userValues = [value.ardb_id, value.branch_c, enc_pss, value.device_id, value.user_id, user_data.id, dateFormat(currDt, "yyyy-mm-dd HH:MM:ss")];
                 let res_dt2 = await F_Insert(0, "md_user", userFields, userFldIndex, userValues, null, 0);
                 if(res_dt2.suc > 0){
                     req.flash('success', 'Agent Added Successfully')

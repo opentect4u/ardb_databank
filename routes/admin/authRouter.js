@@ -50,7 +50,7 @@ authRouter.post('/', async (req, res) => {
             res.cookie('auth_token', token, { httpOnly: true, secure: false });
     
             if (res_dt.msg[0].user_type == 'A') {
-                res.redirect('/super-admin/summary')
+                res.redirect('/admin/dashboard/superadmin')
             } else {
                 req.flash('success', 'login successful')
                 res.redirect('/admin/dashboard')

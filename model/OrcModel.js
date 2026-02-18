@@ -55,7 +55,7 @@ const F_Select = async (db_id, fields, table_name, where, order, flag, full_quer
 
         let sql = `SELECT ${fields} FROM ${table_name} ${where} ${order}`;
 
-        console.log(sql);
+        // console.log(sql);
         // oracledb.fetchAsString = [oracledb.DATE, oracledb.TIMESTAMP];
 
         const result = await con.execute(full_query ? full_query : sql, [], {
