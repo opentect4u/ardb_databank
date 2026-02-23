@@ -16,24 +16,28 @@
                     </div>
                     <% } %>
                     <div class="row">
-
-                        <div class="form-group col-6">
-                            <label for="ardb_id"><b>ARDB Name:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></b></label>
-                            <select name="ardb_id" class="form-control" id="ardb_id" <%= agent_id> 0 ? 'disabled' : '' %>/>
-                                <option value="">Select ARDB Name</option>
-                                <% if(ardbList.length > 0){
-                                    ardbList.forEach(dt => {
-                                        var _selected = (req_data.ardb_id == dt.ardb_id) ? 'selected' : ''; %>
-                                        <option value="<%= dt.ardb_id %>" <%= _selected %>>
-                                            <%= dt.ardb_name %>
-                                        </option>
-                                    <% })
-                                } %>
-                            </select>
-                            <% if(agent_id> 0){ %>
-                                <input type="hidden" name="ardb_id" value="<%= req_data.ardb_id %>">
-                            <% } %>
-                        </div>
+                        <% if(user.user_data.msg[0].user_type !='A' ){ %>
+                            <input type="hidden" name="ardb_id" value="<%= user.user_data.msg[0].ardb_id %>">
+                        <% }else{ %>
+                            <div class="form-group col-6">
+                                <label for="ardb_id"><b>ARDB Name:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></b></label>
+                                <select name="ardb_id" class="form-control" id="ardb_id" <%= agent_id> 0 ? 'disabled' : '' %>/>
+                                    <option value="">Select ARDB Name</option>
+                                    <% if(ardbList.length > 0){
+                                        ardbList.forEach(dt => {
+                                            var _selected = (req_data.ardb_id == dt.ardb_id) ? 'selected' : ''; %>
+                                            <option value="<%= dt.ardb_id %>" <%= _selected %>>
+                                                <%= dt.ardb_name %>
+                                            </option>
+                                        <% })
+                                    } %>
+                                </select>
+                                <% if(agent_id> 0){ %>
+                                    <input type="hidden" name="ardb_id" value="<%= req_data.ardb_id %>">
+                                <% } %>
+                            </div>
+                        <% } %>
+                        
                         <div class="form-group col-6">
                             <label for="branch_c">Branch Code:<% if(agent_id == 0 || agent_id == undefined || agent_id == null){ %><span style="color: rgb(182, 5, 5);">*</span><% } %></label>
                             <input type="text" id="branch_c" name="branch_c" class="form-control" placeholder="Write branch code here..."
