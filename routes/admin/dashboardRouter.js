@@ -5,7 +5,7 @@ const { F_Select } = require('../../model/OrcModel');
 dashAdminRouter.get('/', async (req, res) => {
     const user_data = req.user.user_data.msg[0];
 
-    const BrProgData = await F_Select(0, '*', 'bank_branch_coll_progress', `ardb_id=${user_data.ardb_id} ${user_data.user_type == 'R' ? `AND branch_code = '${user_data.branch_code}'` : ''}`, null, 1)    
+    const BrProgData = await F_Select(0, '*', 'bank_branch_coll_progress', `ardb_id=${user_data.ardb_id} ${user_data.user_type == 'R' ? `AND branch_id = '${user_data.branch_code}'` : ''}`, null, 1)    
 
     const agntDayWiseCol = await F_Select(0, `a.ardb_id, b.ardb_name, a.branch_code, c.branch_name, a.supervisor_code, d.supervisor_name, TO_CHAR(a.transaction_date, 'YYYY-MM-DD') transaction_date, TO_CHAR(a.transaction_date, 'DD-Mon-RR') trn_dt, sum(a.tot_recov) tot_col_amt`, 'td_collection a, md_ardb b, md_branch c, md_supervisor d', `a.ardb_id=b.ardb_id AND a.branch_code=c.branch_code AND a.ardb_id=c.ardb_id AND a.supervisor_code=d.supervisor_code AND a.ardb_id=d.ardb_id AND a.branch_code=d.branch_code AND TO_CHAR(a.transaction_date, 'MM-YYYY') = TO_CHAR(SYSDATE, 'MM-YYYY') AND a.ardb_id=${user_data.ardb_id} ${user_data.user_type == 'R' ? `AND a.branch_code = '${user_data.branch_code}'` : ''}`, `group by a.ardb_id, b.ardb_name, a.branch_code, c.branch_name, a.supervisor_code, d.supervisor_name, a.transaction_date order by a.ardb_id,a.branch_code,a.transaction_date,a.supervisor_code`, 1)
 

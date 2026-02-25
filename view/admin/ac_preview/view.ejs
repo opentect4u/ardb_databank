@@ -20,11 +20,12 @@
                             <select name="" class="form-control s2id" id="agentCode">
                                 <option value="">Select Supervisor</option>
 
-                                <% data.forEach(function(item) { %>
+                                <% if(Array.isArray(data) && data.length > 0){
+                                data.forEach(function(item) { %>
                                     <option value="<%= item.supervisor_id %>">
                                         <%= item.user_id %>, <%= item.supervisor_name %>
                                     </option>
-                                <% }); %>
+                                <% });} %>
                             </select>
                         </div>
 
