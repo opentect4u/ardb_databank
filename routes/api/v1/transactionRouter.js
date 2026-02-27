@@ -115,7 +115,7 @@ transRouter.post('/transaction', async (req, res) => {
                             user_ac_info.product_type_code,
                             user_ac_info.product_id,
                             user_ac_info.cust_name,
-                            value.intt_calc_flag,
+                            dateFormat(value.intt_calc_dt, 'mm-dd') == '03-31' ? 'N' : 'Y',
                             dateFormat(value.intt_calc_dt, 'yyyy-mm-dd'),
                             dateFormat(value.recov_dt, "yyyy-mm-dd"),
                             value.tot_recov,
