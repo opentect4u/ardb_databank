@@ -479,9 +479,9 @@ transRouter.post('/calculate_intt', async (req, res) => {
         res.json({
             "success": {
                 suc: 1, msg: {
-                    curr_intt_calculated: cal_intt.suc > 0 ? cal_intt.AD_CURR_INTT - value.curr_intt : 0,
-                    ovd_intt_calculated: cal_intt.suc > 0 ? cal_intt.AD_OVD_INTT - value.ovd_intt : 0,
-                    penal_intt_calculated: cal_intt.suc > 0 ? cal_intt.AD_PENAL_INTT - value.penal_intt : 0,
+                    curr_intt_calculated: cal_intt.suc > 0 ? (cal_intt.AD_CURR_INTT > 0 ? cal_intt.AD_CURR_INTT - value.curr_intt : cal_intt.AD_CURR_INTT) : 0,
+                    ovd_intt_calculated: cal_intt.suc > 0 ? (cal_intt.AD_OVD_INTT > 0 ? cal_intt.AD_OVD_INTT - value.ovd_intt : cal_intt.AD_OVD_INTT) : 0,
+                    penal_intt_calculated: cal_intt.suc > 0 ? (cal_intt.AD_PENAL_INTT > 0 ? cal_intt.AD_PENAL_INTT - value.penal_intt : cal_intt.AD_PENAL_INTT) : 0,
                     curr_intt_demand_calculated: 0,
                     ovd_intt_demand_calculated: 0,
                     penal_intt_demand_calculated: 0

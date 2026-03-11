@@ -1,8 +1,12 @@
 .github
 config/conString.js
 node_modules
-.env
 package-lock.json
 *.html
 *.zip
 instantclient/*
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+branch_structure.json
+config.bat
