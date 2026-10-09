@@ -175,7 +175,7 @@ transRouter.post('/transaction', async (req, res) => {
                                 user_ac_info.curr_intt_demand,
                                 user_ac_info.ovd_intt_demand,
                                 user_ac_info.penal_intt_demand,
-                                value.intt_calc_flag,
+                                value.intt_calc_dt && value.intt_calc_dt != '' ? (dateFormat(value.intt_calc_dt, 'mm-dd') != '03-31' ? 'N' : 'Y') : 'N',
                                 dateFormat(value.intt_calc_dt, 'yyyy-mm-dd'),
                                 value.curr_intt_calculated,
                                 value.ovd_intt_calculated,
